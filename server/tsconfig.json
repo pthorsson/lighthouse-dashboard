@@ -1,0 +1,26 @@
+{
+  "compilerOptions": {
+    "module": "commonjs",
+    "target": "es6",
+    "lib": ["es2018"],
+    "noImplicitAny": true,
+    "sourceMap": false,
+    "outDir": "../.build/server",
+    "moduleResolution": "node",
+    "allowSyntheticDefaultImports": true,
+    "types": ["node"],
+    "rootDir": "./src",
+    "baseUrl": "./src",
+    "paths": {
+      "@db": ["./db.ts"],
+      "@config": ["./config.ts"],
+      "@controllers/*": ["./controllers/*"],
+      "@models/*": ["./models/*"],
+      "@middleware": ["./middleware/index.ts"],
+      "@middleware/*": ["./middleware/*"],
+      "@lib/*": ["./lib/*"]
+    },
+    "typeRoots": ["./node_modules/@types", "./typings", "../typings"]
+  },
+  "include": ["src/**/*", "./typings", "../typings"]
+}

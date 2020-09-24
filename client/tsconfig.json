@@ -1,0 +1,34 @@
+{
+  "compilerOptions": {
+    "module": "ESNext",
+    "target": "es5",
+    "lib": ["es2018", "dom"],
+    "jsx": "react",
+    "noImplicitAny": true,
+    "sourceMap": true,
+    "outDir": "../.build/client",
+    "baseUrl": "./src",
+    "rootDir": "./src",
+    "moduleResolution": "node",
+    "allowSyntheticDefaultImports": true,
+    "types": ["node"],
+    "paths": {
+      "*": ["node_modules/*"],
+      "@theme": ["./theme.ts"],
+      "@hooks": ["./hooks/index.ts"],
+      "@hooks/*": ["./hooks/*"],
+      "@lib/*": ["./lib/*"],
+      "@pages/*": ["./pages/*"],
+      "@components/*": ["./components/*"],
+      "@ui/*": ["./ui/*"],
+    },
+    "typeRoots": [
+      "./node_modules/@types",
+      "../node_modules/@types",
+      "./typings",
+      "../typings"
+    ]
+  },
+  "include": ["src/**/*", "../typings"],
+  "exclude": ["src/**/*.test.ts"]
+}
