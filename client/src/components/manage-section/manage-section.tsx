@@ -1,6 +1,10 @@
 import React, { useState } from 'react';
-import styled from 'styled-components';
-import Modal, { useModal } from '@ui/modal';
+import Modal, {
+  useModal,
+  ModalHeader,
+  ModalSubHeader,
+  ModalSection,
+} from '@ui/modal';
 import { useLighthouse } from '@hooks';
 
 import SectionSettings from './section-settings';
@@ -22,10 +26,10 @@ const ManageSection: React.FC = () => {
       <Modal id="manage-section-modal">
         <ModalHeader>Manage section</ModalHeader>
         <ModalSubHeader>{data.name}</ModalSubHeader>
-        <SettingsSection title="Section settings">
+        <ModalSection title="Section settings">
           <SectionSettings section={data} />
-        </SettingsSection>
-        <SettingsSection title="Page groups">
+        </ModalSection>
+        <ModalSection title="Page groups">
           <ManagePageGroups
             pageGroups={data.pageGroups}
             selectPageGroup={pageGroup => {
@@ -33,10 +37,10 @@ const ManageSection: React.FC = () => {
               setSelectedPageGroup(pageGroup);
             }}
           />
-        </SettingsSection>
-        <SettingsSection title="Delete section">
+        </ModalSection>
+        <ModalSection title="Delete section">
           <DeleteSection section={data} />
-        </SettingsSection>
+        </ModalSection>
       </Modal>
       {pageGroup && (
         <Modal id="manage-page-group-modal" backButton={true}>
@@ -44,15 +48,15 @@ const ManageSection: React.FC = () => {
           <ModalSubHeader>
             {pageGroup.namePrefix} {pageGroup.name} {pageGroup.nameSuffix}
           </ModalSubHeader>
-          <SettingsSection title="Page group settings">
+          <ModalSection title="Page group settings">
             <PageGroupSettings pageGroup={pageGroup} />
-          </SettingsSection>
-          <SettingsSection title="Pages">
+          </ModalSection>
+          <ModalSection title="Pages">
             <ManagePageGroupPages pageGroup={pageGroup} />
-          </SettingsSection>
-          <SettingsSection title="Delete page group">
+          </ModalSection>
+          <ModalSection title="Delete page group">
             <DeletePageGroup pageGroup={pageGroup} />
-          </SettingsSection>
+          </ModalSection>
         </Modal>
       )}
     </>
@@ -60,49 +64,3 @@ const ManageSection: React.FC = () => {
 };
 
 export default ManageSection;
-
-// Elements
-
-const ModalHeader = styled.h2`
-  text-align: center;
-  font-weight: 400;
-  margin: 0 0 10px 0;
-`;
-
-const ModalSubHeader = styled.h2`
-  text-align: center;
-  font-weight: 400;
-  font-size: 16px;
-  margin: 0 0 30px 0;
-`;
-
-/**
- *
- */
-
-type SettingsSectionProps = { title: string };
-
-const SettingsSection: React.FC<SettingsSectionProps> = ({
-  title,
-  children,
-}) => {
-  return (
-    <SettingsSectionWrapper>
-      <SettingsSectionTitle>{title}</SettingsSectionTitle>
-      {children}
-    </SettingsSectionWrapper>
-  );
-};
-
-const SettingsSectionWrapper = styled.div`
-  margin: 40px 0 0 0;
-`;
-
-const SettingsSectionTitle = styled.h3`
-  display: block;
-  font-weight: 400;
-  font-size: 16px;
-  padding-bottom: 10px;
-  margin: 0 0 30px 0;
-  border-bottom: 1px solid ${({ theme }) => theme.bg};
-`;
