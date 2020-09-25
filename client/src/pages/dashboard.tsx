@@ -115,9 +115,12 @@ const ControlsWrapper = styled.div`
 const Actions = styled.div`
   display: flex;
   align-items: flex-start;
+  flex-wrap: wrap;
+  justify-content: flex-end;
   margin-top: 10px;
 
   > * {
     margin-left: ${({ theme }) => theme.gridGap}px;
+    margin-top: ${({ theme }) => theme.gridGap}px;
   }
 `;
