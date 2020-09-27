@@ -1,17 +1,21 @@
-import { useEffect, useState, useCallback } from 'react';
-import { useDidUpdateEffect } from './use-did-update-effect';
+import { useEffect, useCallback } from 'react';
 import { wait } from '@lib/utils';
 import { apiFetch } from '@lib/adal';
+import { useObjectState } from './use-object-state';
 
 type ApiResponse<T> = {
   data: T;
   error: any;
   state: API_STATE;
-  exec: (options?: {
-    payload?: InternalState['payload'];
-    params?: InternalState['params'];
-  }) => void;
+  exec: ApiExecute;
 };
+
+type ApiExecuteOptions = {
+  payload?: any;
+  params?: { [key: string]: string | number };
+};
+
+type ApiExecute = (options?: ApiExecuteOptions) => Promise<void>;
 
 export enum API_STATE {
   IDLE = 'IDLE',
@@ -35,8 +39,6 @@ type ApiOptions = {
 };
 
 type InternalState = {
-  payload: any;
-  params: { [key: string]: string | number };
   data: any;
   error: any;
   requestState: API_STATE;
@@ -50,56 +52,46 @@ export const useApi = <T>(
   const method: ApiOptions['method'] = options.method || 'GET';
   const delay = options.delay || 0;
 
-  const [triggerCheck, triggerExec] = useState(0);
-
-  const [state, setState] = useState<InternalState>({
-    payload: null,
-    params: {},
+  const [state, setState] = useObjectState<InternalState>({
     data: null,
     error: null,
     requestState: API_STATE.IDLE,
   });
 
-  const updateState = (data: any) => setState({ ...state, ...data });
+  const exec: ApiExecute = useCallback(
+    ({ payload, params = {} } = {}) =>
+      new Promise<void>(resolve => {
+        setState({
+          requestState: API_STATE.FETCHING,
+          error: null,
+        });
 
-  const exec = useCallback(() => triggerExec(triggerCheck + 1), [triggerCheck]);
+        const templatedUrl = templateUrlParams(url, params);
 
-  // Set mounted state
+        execRequest(templatedUrl, method, payload, delay, (data, error) => {
+          setState({
+            data,
+            error,
+            requestState: data ? API_STATE.SUCCESS : API_STATE.ERROR,
+          });
+          resolve();
+        });
+      }),
+    [state]
+  );
+
+  // Execute request on mount if set and method is GET
   useEffect(() => {
     if (runOnMount && method === 'GET') {
       exec();
     }
   }, []);
 
-  // Execute request
-  useDidUpdateEffect(() => {
-    updateState({
-      requestState: API_STATE.FETCHING,
-      error: null,
-    });
-
-    const templatedUrl = templateUrlParams(url, state.params);
-
-    execRequest(templatedUrl, method, state.payload, delay, (data, error) => {
-      updateState({
-        data,
-        error,
-        requestState: data ? API_STATE.SUCCESS : API_STATE.ERROR,
-      });
-    });
-  }, [triggerCheck]);
-
   return {
     data: state.data,
     error: state.error,
     state: state.requestState,
-    exec: (options = {}) => {
-      updateState({
-        payload: options.payload || null,
-        params: options.params || {},
-      });
-      exec();
-    },
+    exec,
   };
 };
 
@@ -143,7 +135,10 @@ const execRequest = async (
 /**
  * Helper for templating URL params from object.
  */
-const templateUrlParams = (url: string, params: InternalState['params'] = {}) =>
+const templateUrlParams = (
+  url: string,
+  params: ApiExecuteOptions['params'] = {}
+) =>
   url.replace(/:([a-zA-Z0-9]+)/g, (fullMatch, key: string) =>
     params[key].toString()
   );
