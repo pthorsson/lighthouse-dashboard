@@ -30,9 +30,8 @@ export const remove: RequestHandler[] = [
     const { id } = req.params;
 
     try {
+      await Token.deleteMany({ user: id });
       await User.deleteMany({ _id: id });
-
-      // Remove user tokens when removing user
 
       return res.json('OK');
     } catch (err) {
@@ -44,13 +43,14 @@ export const remove: RequestHandler[] = [
 export const update: RequestHandler[] = [
   async (req, res, next) => {
     const { id } = req.params;
-    const { role } = req.body;
+    const { role, email } = req.body;
 
     const user = await User.findOne({ _id: id });
 
     if (user) {
       try {
-        user.role = role || user.role;
+        user.email = email;
+        user.role = role;
 
         await user.save();
 

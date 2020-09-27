@@ -2,9 +2,10 @@ import React, { useState } from 'react';
 import styled, { ThemeProvider } from 'styled-components';
 import { Link } from 'react-router-dom';
 import PageGroup from '@components/page-group';
-import ManageSection from '@components/manage-section';
 import CurrentUserInfo from '@components/current-user-info';
+import ManageSection from '@components/manage-section';
 import ManageTokens from '@components/manage-tokens';
+import ManageUsers from '@components/manage-users';
 import { useModal } from '@ui/modal';
 import { EnsureUserRole, useLighthouse, useApi, USER_ROLES } from '@hooks';
 import { Button, RouteLinkButton } from '@ui/buttons';
@@ -12,6 +13,7 @@ import { getUrlQuery } from '@lib/utils';
 
 const Dashboard = () => {
   const { data, state, section } = useLighthouse();
+  const manageUsersModal = useModal('manage-users-modal');
   const manageTokensModal = useModal('manage-tokens-modal');
   const manageSectionModal = useModal('manage-section-modal');
   const [itemLayout, setItemLayout] = useState('standard');
@@ -36,6 +38,12 @@ const Dashboard = () => {
           <ControlsWrapper>
             <CurrentUserInfo />
             <Actions>
+              <EnsureUserRole role={USER_ROLES.SUPERADMIN}>
+                <Button size="large" onClick={() => manageUsersModal.toggle()}>
+                  Manage users
+                </Button>
+                <ManageUsers />
+              </EnsureUserRole>
               <EnsureUserRole role={USER_ROLES.ADMIN}>
                 <Button
                   size="large"
