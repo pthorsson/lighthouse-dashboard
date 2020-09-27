@@ -13,11 +13,7 @@ const CurrentUserInfo: React.FC = () => {
   return (
     <Wrapper>
       <Username>
-        {!email && role === USER_ROLES.VIEWER ? (
-          <>Verified token</>
-        ) : (
-          <>Logged in as {email}</>
-        )}
+        {!email ? <>Verified token</> : <>Logged in as {email}</>}
       </Username>
       <RoleBadge role={roleName}>{roleName}</RoleBadge>
     </Wrapper>
