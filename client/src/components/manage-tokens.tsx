@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import styled from 'styled-components';
 import { useApi, API_STATE, USER_ROLES, useCurrentUser } from '@hooks';
 import Modal, { ModalHeader, ModalSection } from '@ui/modal';
@@ -7,7 +7,7 @@ import { Button } from '@ui/buttons';
 
 const ROLES = ['None', 'Viewer', 'User'];
 
-const UserTokens: React.FC = () => {
+const ManageTokens: React.FC = () => {
   const currentUser = useCurrentUser();
   const [newTokenRole, setNewTokenRole] = useState(USER_ROLES.VIEWER);
   const getTokens = useApi<Lhd.Token[]>('/api/token', {
@@ -23,8 +23,8 @@ const UserTokens: React.FC = () => {
   });
 
   return (
-    <Modal id="user-tokens-modal">
-      <ModalHeader>User tokens</ModalHeader>
+    <Modal id="manage-tokens-modal">
+      <ModalHeader>Manage tokens</ModalHeader>
       <Description>
         Tokens can be used to visit the application and access certain API
         endpoint without being logged in. This can be for example to share the
@@ -116,7 +116,7 @@ const UserTokens: React.FC = () => {
   );
 };
 
-export default UserTokens;
+export default ManageTokens;
 
 const truncateToken = (token: string) =>
   token.substring(0, 10) + '***********************';

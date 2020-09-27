@@ -4,7 +4,7 @@ import { Link } from 'react-router-dom';
 import PageGroup from '@components/page-group';
 import ManageSection from '@components/manage-section';
 import CurrentUserInfo from '@components/current-user-info';
-import UserTokens from '@components/user-tokens';
+import ManageTokens from '@components/manage-tokens';
 import { useModal } from '@ui/modal';
 import { EnsureUserRole, useLighthouse, useApi, USER_ROLES } from '@hooks';
 import { Button, RouteLinkButton } from '@ui/buttons';
@@ -12,7 +12,7 @@ import { getUrlQuery } from '@lib/utils';
 
 const Dashboard = () => {
   const { data, state, section } = useLighthouse();
-  const userTokensModal = useModal('user-tokens-modal');
+  const manageTokensModal = useModal('manage-tokens-modal');
   const manageSectionModal = useModal('manage-section-modal');
   const [itemLayout, setItemLayout] = useState('standard');
   const triggerAllAudits = useApi(`/api/actions/trigger-all-audits/${section}`);
@@ -46,10 +46,10 @@ const Dashboard = () => {
                 <ManageSection />
               </EnsureUserRole>
               <EnsureUserRole role={USER_ROLES.USER} requireLoggedInUser={true}>
-                <Button size="large" onClick={() => userTokensModal.toggle()}>
-                  Tokens
+                <Button size="large" onClick={() => manageTokensModal.toggle()}>
+                  Manage tokens
                 </Button>
-                <UserTokens />
+                <ManageTokens />
               </EnsureUserRole>
               <EnsureUserRole role={USER_ROLES.USER}>
                 <Button size="large" onClick={() => triggerAllAudits.exec()}>
