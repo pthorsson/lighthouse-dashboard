@@ -32,4 +32,17 @@ declare module Lhd {
     seo: number;
     page?: string;
   };
+
+  export type User = {
+    _id: string;
+    email: string;
+    role: number;
+  };
+
+  export type Token = {
+    _id: string;
+    token: string;
+    user: string;
+    role: number;
+  };
 }

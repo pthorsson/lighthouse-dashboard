@@ -5,6 +5,7 @@ import { setDates, incrementVersion } from '@models/middleware';
 interface IToken extends Document {
   token?: string;
   user?: string;
+  role?: number;
   createdAt?: Date;
   updatedAt?: Date;
 }
@@ -14,6 +15,7 @@ const TokenSchema = new Schema(
   {
     token: String,
     user: mongoose.Types.ObjectId,
+    role: Number,
     createdAt: Date,
     updatedAt: Date,
   },

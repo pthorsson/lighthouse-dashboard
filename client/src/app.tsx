@@ -17,12 +17,12 @@ const App = () => {
   return (
     <Router>
       <Switch>
-        {currentUser.role >= USER_ROLES.NONE && (
+        {currentUser.role >= USER_ROLES.VIEWER && (
           <Route exact path="/">
             <LandingPage />
           </Route>
         )}
-        {currentUser.role >= USER_ROLES.NONE && (
+        {currentUser.role >= USER_ROLES.VIEWER && (
           <Route exact path="/:section">
             <SectionVerifier>
               <Dashboard />

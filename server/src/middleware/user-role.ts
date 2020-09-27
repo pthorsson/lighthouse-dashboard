@@ -2,6 +2,7 @@ import { RequestHandler } from 'express';
 import * as passport from 'passport';
 import * as passportAzureAd from 'passport-azure-ad';
 import User from '@models/user.model';
+import Token from '@models/token.model';
 
 declare global {
   namespace Express {
@@ -37,9 +38,6 @@ export enum USER_ROLES {
   SUPERADMIN,
 }
 
-// TODO: User added tokens
-const DUMMY_TOKEN = 'qwe123';
-
 /**
  * We check the role that is passed to this middleware and check a number of
  * steps to determine if to pass the request through.
@@ -54,13 +52,15 @@ export const ensureUserRole = (role: USER_ROLES): RequestHandler => async (
     return next();
   }
 
-  // If role VIEWER is required and view token is present
-  if (role === USER_ROLES.VIEWER && req.query.token) {
-    if (req.query.token === DUMMY_TOKEN) {
-      return next();
+  // If role VIEWER or USER is required and token is present
+  if (role <= USER_ROLES.USER && req.query.token) {
+    const token = await Token.findOne({ token: req.query.token as string });
+
+    if (!token || token.role < role) {
+      return res.status(401).json('Unauthorized');
     }
 
-    return res.status(401).json('Unauthorized');
+    return next();
   }
 
   // Check if bearer token is present and get user role from database
@@ -105,8 +105,12 @@ export const setCurrentUser = (): RequestHandler => async (req, res, next) => {
 
   // If viewer token is available we verify it and update the role if good token
   if (req.query.token) {
-    if (req.query.token === DUMMY_TOKEN) {
-      req.currentUser.role = USER_ROLES.VIEWER;
+    const token = await Token.findOne({ token: req.query.token as string });
+
+    if (token) {
+      // Ensure token role is not greater than USER
+      req.currentUser.role = Math.min(token.role, USER_ROLES.USER);
+      return next();
     }
   }
 

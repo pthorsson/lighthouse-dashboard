@@ -83,13 +83,19 @@ export const useCurrentUser: CurrentUserHook = () =>
 
 type EnsureUserRoleProps = {
   role: USER_ROLES;
+  requireLoggedInUser?: boolean;
 };
 
 export const EnsureUserRole: React.FC<EnsureUserRoleProps> = ({
   children,
   role,
+  requireLoggedInUser = false,
 }) => {
   const currentUser = useCurrentUser();
+
+  if (requireLoggedInUser) {
+    return currentUser.id && currentUser.role >= role ? <>{children}</> : null;
+  }
 
   return currentUser.role >= role ? <>{children}</> : null;
 };

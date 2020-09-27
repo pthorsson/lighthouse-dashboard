@@ -4,18 +4,23 @@ import { Link } from 'react-router-dom';
 import PageGroup from '@components/page-group';
 import ManageSection from '@components/manage-section';
 import CurrentUserInfo from '@components/current-user-info';
+import UserTokens from '@components/user-tokens';
 import { useModal } from '@ui/modal';
 import { EnsureUserRole, useLighthouse, useApi, USER_ROLES } from '@hooks';
 import { Button, RouteLinkButton } from '@ui/buttons';
+import { getUrlQuery } from '@lib/utils';
 
 const Dashboard = () => {
   const { data, state, section } = useLighthouse();
+  const userTokensModal = useModal('user-tokens-modal');
   const manageSectionModal = useModal('manage-section-modal');
   const [itemLayout, setItemLayout] = useState('standard');
   const triggerAllAudits = useApi(`/api/actions/trigger-all-audits/${section}`);
   const removeAllQueuedAudits = useApi(
     `/api/actions/remove-all-queued-audits/${section}`
   );
+
+  const { token } = getUrlQuery();
 
   return data ? (
     <ThemeProvider theme={{ itemLayout }}>
@@ -24,7 +29,8 @@ const Dashboard = () => {
           <HeaderWrapper>
             <Header1>Lighthouse dashboard</Header1>
             <Header2>
-              <Link to="/">Sections</Link> / {data.name}
+              <Link to={`/${token ? `?token=${token}` : ''}`}>Sections</Link> /{' '}
+              {data.name}
             </Header2>
           </HeaderWrapper>
           <ControlsWrapper>
@@ -37,6 +43,13 @@ const Dashboard = () => {
                 >
                   Manage section
                 </Button>
+                <ManageSection />
+              </EnsureUserRole>
+              <EnsureUserRole role={USER_ROLES.USER} requireLoggedInUser={true}>
+                <Button size="large" onClick={() => userTokensModal.toggle()}>
+                  Tokens
+                </Button>
+                <UserTokens />
               </EnsureUserRole>
               <EnsureUserRole role={USER_ROLES.USER}>
                 <Button size="large" onClick={() => triggerAllAudits.exec()}>
@@ -60,7 +73,10 @@ const Dashboard = () => {
               >
                 Compare mode
               </Button>
-              <RouteLinkButton to={`/${section}/display`} size="large">
+              <RouteLinkButton
+                to={`/${section}/display${token ? `?token=${token}` : ''}`}
+                size="large"
+              >
                 Display mode
               </RouteLinkButton>
             </Actions>
@@ -74,7 +90,6 @@ const Dashboard = () => {
           />
         ))}
       </Wrapper>
-      <ManageSection />
     </ThemeProvider>
   ) : null;
 };

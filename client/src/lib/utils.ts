@@ -44,3 +44,35 @@ export const getUrlQuery = (): { [key: string]: any } =>
  */
 export const wait = (ms: number) =>
   new Promise(resolve => setTimeout(resolve, ms));
+
+/**
+ * Copies given string to clipboard
+ */
+export const copyToClipboard = (content: string) =>
+  new Promise((resolve, reject) => {
+    const textArea = document.createElement('textarea');
+
+    // Apply content to text area
+    textArea.value = content;
+
+    // Avoid scrolling to bottom
+    textArea.style.top = '0';
+    textArea.style.left = '0';
+    textArea.style.position = 'fixed';
+
+    document.body.appendChild(textArea);
+    textArea.focus();
+    textArea.select();
+
+    try {
+      if (document.execCommand('copy')) {
+        resolve(true);
+      } else {
+        resolve(false);
+      }
+    } catch (err) {
+      resolve(false);
+    }
+
+    document.body.removeChild(textArea);
+  });

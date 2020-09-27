@@ -30,8 +30,38 @@ export const createLogger = (label: string) => (message: string) =>
  */
 export const incrementId = ((i = 0) => () => i++)();
 
+/**
+ * Wrapper function for encoding a base64 string.
+ */
 export const encodeBase64 = (str: string) =>
   Buffer.from(str).toString('base64');
 
+/**
+ * Wrapper function for decoding a base64 string.
+ */
 export const decodeBase64 = (base64Str: string) =>
   Buffer.from(base64Str, 'base64').toString();
+
+/**
+ *
+ */
+export const generateString = (minLength = 100, maxLength?: number) => {
+  maxLength = Math.max(maxLength || minLength, minLength);
+
+  let str = '';
+  const CHARACTERS =
+    'qwertyuiopasdfghjklzxcvbnmQWERTYUIOPASDFGHJKLZXCVBNM0123456789-_';
+
+  const length = Math.floor(
+    Math.random() * (maxLength - minLength + 1) + minLength
+  );
+
+  for (let i = 0; i < length; i++) {
+    const randomIndex = Math.floor(Math.random() * CHARACTERS.length);
+    const char = CHARACTERS[randomIndex];
+
+    str += char;
+  }
+
+  return str;
+};

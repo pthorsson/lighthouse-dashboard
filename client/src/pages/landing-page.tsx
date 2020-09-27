@@ -1,15 +1,18 @@
-import React, { useEffect, useState, useCallback } from 'react';
+import React, { useEffect, useState } from 'react';
 import styled, { css } from 'styled-components';
 import { Link, useHistory } from 'react-router-dom';
 import { useApi } from '@hooks';
 import CreateSection from '@components/create-section';
 import { useModal } from '@ui/modal';
+import { getUrlQuery } from '@lib/utils';
 
 const LandingPage = () => {
   const { toggle } = useModal('create-section-modal');
   const { data, exec } = useApi<Lhd.Section[]>('/api/sections', {
     runOnMount: true,
   });
+
+  const { token } = getUrlQuery();
 
   return (
     <Wrapper>
@@ -19,7 +22,10 @@ const LandingPage = () => {
         <>
           <SectionsWrapper columns={Math.max(1, Math.min(3, data.length + 1))}>
             {data.map(section => (
-              <SectionLink key={section._id} to={`/${section.slug}`}>
+              <SectionLink
+                key={section._id}
+                to={`/${section.slug}${token ? `?token=${token}` : ''}`}
+              >
                 <SectionName>{section.name}</SectionName>
                 <SectionSlug>{section.slug}</SectionSlug>
               </SectionLink>

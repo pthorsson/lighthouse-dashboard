@@ -118,6 +118,15 @@ app.get('/api/admin/page', pageController.getAll);
 app.post('/api/admin/page', pageController.create);
 app.delete('/api/admin/page/:id', pageController.remove);
 
+// ---- Token API endpoints
+
+// Ensure USER role for all token endpoints and set current user
+app.use('/api/token', [ensureUserRole(USER_ROLES.USER), setCurrentUser()]);
+
+app.get('/api/token', userController.getTokens);
+app.post('/api/token', userController.createToken);
+app.delete('/api/token/:tokenId', userController.removeToken);
+
 // ---- Action API endpoints
 
 // Ensure USER role for all action endpoints
