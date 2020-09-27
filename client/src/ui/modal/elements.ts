@@ -13,13 +13,13 @@ export const ModalSubHeader = styled.h3`
   margin: 0 0 30px 0;
 `;
 
-type ModalSectionProps = { title: string };
+type ModalSectionProps = { sectionTitle: string };
 
 export const ModalSection = styled.div<ModalSectionProps>`
   margin: 40px 0 0 0;
 
   :before {
-    content: '${({ title }) => title}';
+    content: '${({ sectionTitle }) => sectionTitle}';
     display: block;
     font-weight: 400;
     font-size: 16px;

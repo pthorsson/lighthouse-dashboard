@@ -26,10 +26,10 @@ const ManageSection: React.FC = () => {
       <Modal id="manage-section-modal">
         <ModalHeader>Manage section</ModalHeader>
         <ModalSubHeader>{data.name}</ModalSubHeader>
-        <ModalSection title="Section settings">
+        <ModalSection sectionTitle="Section settings">
           <SectionSettings section={data} />
         </ModalSection>
-        <ModalSection title="Page groups">
+        <ModalSection sectionTitle="Page groups">
           <ManagePageGroups
             pageGroups={data.pageGroups}
             selectPageGroup={pageGroup => {
@@ -38,7 +38,7 @@ const ManageSection: React.FC = () => {
             }}
           />
         </ModalSection>
-        <ModalSection title="Delete section">
+        <ModalSection sectionTitle="Delete section">
           <DeleteSection section={data} />
         </ModalSection>
       </Modal>
@@ -48,13 +48,13 @@ const ManageSection: React.FC = () => {
           <ModalSubHeader>
             {pageGroup.namePrefix} {pageGroup.name} {pageGroup.nameSuffix}
           </ModalSubHeader>
-          <ModalSection title="Page group settings">
+          <ModalSection sectionTitle="Page group settings">
             <PageGroupSettings pageGroup={pageGroup} />
           </ModalSection>
-          <ModalSection title="Pages">
+          <ModalSection sectionTitle="Pages">
             <ManagePageGroupPages pageGroup={pageGroup} />
           </ModalSection>
-          <ModalSection title="Delete page group">
+          <ModalSection sectionTitle="Delete page group">
             <DeletePageGroup pageGroup={pageGroup} />
           </ModalSection>
         </Modal>

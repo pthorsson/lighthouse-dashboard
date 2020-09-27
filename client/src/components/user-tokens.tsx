@@ -34,7 +34,7 @@ const UserTokens: React.FC = () => {
         Append <CodeSample>?token=your-token</CodeSample> to the url you want to
         access.
       </Description>
-      <ModalSection title="Existing tokens">
+      <ModalSection sectionTitle="Existing tokens">
         {getTokens.data?.length ? (
           getTokens.data.map(token => (
             <TokenWrapper key={token._id}>
@@ -67,7 +67,7 @@ const UserTokens: React.FC = () => {
           <div>No tokens has been added yet</div>
         ) : null}
       </ModalSection>
-      <ModalSection title="Add new token">
+      <ModalSection sectionTitle="Add new token">
         {currentUser.role >= USER_ROLES.USER && (
           <RadioButtonWrapper>
             <RadioButton
