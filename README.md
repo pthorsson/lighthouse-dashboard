@@ -55,3 +55,7 @@ Requirements and instructions for installing and running the application in deve
 
 3. Run yarn dev script `yarn build` in project root to build both back end and front end applications.
 4. Run the server ...
+
+---
+
+Credit to [Volvo Cars](https://www.volvocars.com/) (Global Online Business) where this application has been developed as a side project.
