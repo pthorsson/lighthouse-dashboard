@@ -9,9 +9,9 @@ const roleDescriptions: string[] = [];
 roleDescriptions[USER_ROLES.USER] =
   'Role "user" allows the user to trigger/clear audits and manage tokens';
 roleDescriptions[USER_ROLES.ADMIN] =
-  'Role "user" allows the user to trigger/clear audits and manage tokens and sections';
+  'Role "admin" allows the user to trigger/clear audits and manage tokens and sections';
 roleDescriptions[USER_ROLES.SUPERADMIN] =
-  'Role "user" allows the user to trigger/clear audits and manage tokens, sections and users';
+  'Role "super admin" allows the user to trigger/clear audits and manage tokens, sections and users';
 
 type CreateUserPayload = {
   email: string;
