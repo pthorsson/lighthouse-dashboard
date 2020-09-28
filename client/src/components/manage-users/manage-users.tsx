@@ -33,12 +33,6 @@ const ManageUsers: React.FC = () => {
     }
   }, [getUsers.state, selectedUser]);
 
-  const { toggle } = useModal('manage-users-modal');
-
-  useEffect(() => {
-    toggle();
-  }, []);
-
   return (
     <>
       <Modal id="manage-users-modal">
