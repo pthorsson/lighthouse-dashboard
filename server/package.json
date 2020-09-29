@@ -33,11 +33,11 @@
     "passport": "^0.4.1",
     "passport-azure-ad": "^4.3.0",
     "passport-jwt": "^4.0.0",
-    "socket.io": "^2.3.0"
+    "socket.io": "^2.3.0",
+    "typescript": "*"
   },
   "devDependencies": {
-    "nodemon": "^2.0.4",
-    "typescript": "*"
+    "nodemon": "^2.0.4"
   },
   "resolutions": {
     "@types/express/@types/express-serve-static-core": "4.17.20"
