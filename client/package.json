@@ -3,8 +3,8 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "build": "rm -rf ../.build/client && webpack --env.prod",
-    "dev": "rm -rf ../.build/client && webpack --env.dev"
+    "build": "rm -rf ../.build/client && webpack --env.production",
+    "dev": "rm -rf ../.build/client && webpack"
   },
   "dependencies": {
     "@types/lodash": "^4.14.161",
