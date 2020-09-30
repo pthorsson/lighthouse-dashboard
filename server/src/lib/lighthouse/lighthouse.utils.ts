@@ -8,7 +8,7 @@ import {
   readdirSync,
 } from 'fs';
 import { createLogger } from '@lib/utils';
-import { TMP_DIR } from '@config';
+import { TMP_DIR, ROOT_DIR } from '@config';
 
 /**
  * Async Lighthouse wrapper.
@@ -41,8 +41,11 @@ export const asyncLighthouseCommand = (
     // Temporary report file name
     const tempFileName = join(TMP_DIR, `temp-report_${new Date().getTime()}`);
 
+    // Lighthouse bin file
+    const lighthouseBin = join(ROOT_DIR, 'server/node_modules/.bin/lighthouse');
+
     // Run Lighthouse command process
-    const lh = spawn('./node_modules/.bin/lighthouse', [
+    const lh = spawn(lighthouseBin, [
       url,
       '--output=json,html',
       `--output-path=${tempFileName}`,
