@@ -44,7 +44,7 @@ export const asyncLighthouseCommand = (
       '--output=json,html',
       `--output-path=${tempFileName}`,
       '--only-categories=accessibility,best-practices,performance,seo',
-      '--chrome-flags="--headless"',
+      '--chrome-flags="--headless --no-sandbox --disable-dev-shm-usage --disable-gpu"',
     ]);
 
     lh.on('close', () => {
