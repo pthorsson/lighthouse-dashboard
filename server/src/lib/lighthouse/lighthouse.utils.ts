@@ -7,6 +7,7 @@ import {
   unlinkSync,
   readdirSync,
 } from 'fs';
+import { createLogger } from '@lib/utils';
 import { TMP_DIR } from '@config';
 
 /**
@@ -25,6 +26,8 @@ type LighthouseOutput = {
   htmlReportContent: string;
   jsonReportContent: string;
 };
+
+const log = createLogger('lighthouse-process');
 
 export const asyncLighthouseCommand = (
   url: string
@@ -45,9 +48,22 @@ export const asyncLighthouseCommand = (
       `--output-path=${tempFileName}`,
       '--only-categories=accessibility,best-practices,performance,seo',
       '--chrome-flags="--headless --no-sandbox --disable-dev-shm-usage --disable-gpu"',
+      '--verbose',
     ]);
 
+    log('STARTING');
+
+    lh.stdout.on('data', data => {
+      log(`stdout: ${data}`);
+    });
+
+    lh.stderr.on('data', data => {
+      log(`stderr: ${data}`);
+    });
+
     lh.on('close', () => {
+      log('FINISHED');
+
       try {
         // Read temporary report files
         const jsonReportContent = readFileSync(
