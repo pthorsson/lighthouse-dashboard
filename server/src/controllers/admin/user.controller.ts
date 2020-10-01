@@ -84,10 +84,10 @@ export const createToken: RequestHandler[] = [
       try {
         const generatedToken = generateString(90, 110);
 
-        // Ensure role is less than current users and max User level
+        // Ensure role is less than current users and max Admin level
         const tokenRole = Math.min(
           role,
-          Math.min(req.currentUser.role, USER_ROLES.ADMIN) - 1
+          Math.min(req.currentUser.role, USER_ROLES.SUPERADMIN) - 1
         );
 
         const token = await Token.create({

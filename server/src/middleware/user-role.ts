@@ -52,8 +52,8 @@ export const ensureUserRole = (role: USER_ROLES): RequestHandler => async (
     return next();
   }
 
-  // If role VIEWER or USER is required and token is present
-  if (role <= USER_ROLES.USER && req.query.token) {
+  // If role is less than or euqal to ADMIM is required and and token is present
+  if (role <= USER_ROLES.ADMIN && req.query.token) {
     const token = await Token.findOne({ token: req.query.token as string });
 
     if (!token || token.role < role) {
@@ -103,13 +103,14 @@ export const setCurrentUser = (): RequestHandler => async (req, res, next) => {
     role: USER_ROLES.NONE,
   };
 
-  // If viewer token is available we verify it and update the role if good token
+  // If token is available we verify it and update the role if token is good
   if (req.query.token) {
     const token = await Token.findOne({ token: req.query.token as string });
 
     if (token) {
-      // Ensure token role is not greater than USER
-      req.currentUser.role = Math.min(token.role, USER_ROLES.USER);
+      // Ensure token role is not greater than ADMIN
+
+      req.currentUser.role = Math.min(token.role, USER_ROLES.ADMIN);
       return next();
     }
   }

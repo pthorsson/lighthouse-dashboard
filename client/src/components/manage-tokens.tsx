@@ -5,7 +5,7 @@ import Modal, { ModalHeader, ModalSection } from '@ui/modal';
 import { copyToClipboard } from '@lib/utils';
 import { Button } from '@ui/buttons';
 
-const ROLES = ['None', 'Viewer', 'User'];
+const ROLES = ['None', 'Viewer', 'User', 'Admin'];
 
 const ManageTokens: React.FC = () => {
   const currentUser = useCurrentUser();
@@ -21,6 +21,30 @@ const ManageTokens: React.FC = () => {
     method: 'DELETE',
     delay: 300,
   });
+
+  const tokenRoles = [];
+
+  if (currentUser.role >= USER_ROLES.USER) {
+    tokenRoles.push({
+      role: USER_ROLES.VIEWER,
+      description: 'Viewer privileges - Can view application',
+    });
+  }
+
+  if (currentUser.role >= USER_ROLES.ADMIN) {
+    tokenRoles.push({
+      role: USER_ROLES.USER,
+      description: 'User privileges - Can view application and trigger audits',
+    });
+  }
+
+  if (currentUser.role >= USER_ROLES.SUPERADMIN) {
+    tokenRoles.push({
+      role: USER_ROLES.ADMIN,
+      description:
+        'Admin privileges - Can view application, trigger audits and manage sections',
+    });
+  }
 
   return (
     <Modal id="manage-tokens-modal">
@@ -64,41 +88,25 @@ const ManageTokens: React.FC = () => {
             </TokenWrapper>
           ))
         ) : getTokens.state === API_STATE.SUCCESS ? (
-          <div>No tokens has been added yet</div>
+          <>No tokens has been added yet</>
         ) : null}
       </ModalSection>
       <ModalSection sectionTitle="Add new token">
-        {currentUser.role >= USER_ROLES.USER && (
-          <RadioButtonWrapper>
+        {tokenRoles.map(tokenRole => (
+          <RadioButtonWrapper key={tokenRole.role}>
             <RadioButton
               type="radio"
-              id="viewer-role"
+              id={`role-${tokenRole.role}`}
               disabled={createToken.state === API_STATE.FETCHING}
-              onClick={() => setNewTokenRole(USER_ROLES.VIEWER)}
-              checked={newTokenRole === USER_ROLES.VIEWER}
+              onClick={() => setNewTokenRole(tokenRole.role)}
+              checked={newTokenRole === tokenRole.role}
               readOnly
             />
-            <RadioButtonLabel htmlFor="viewer-role">
-              Viewer role privileges - Can visit application as viewer
+            <RadioButtonLabel htmlFor={`role-${tokenRole.role}`}>
+              {tokenRole.description}
             </RadioButtonLabel>
           </RadioButtonWrapper>
-        )}
-        {currentUser.role >= USER_ROLES.ADMIN && (
-          <RadioButtonWrapper>
-            <RadioButton
-              type="radio"
-              id="user-role"
-              disabled={createToken.state === API_STATE.FETCHING}
-              onClick={() => setNewTokenRole(USER_ROLES.USER)}
-              checked={newTokenRole === USER_ROLES.USER}
-              readOnly
-            />
-            <RadioButtonLabel htmlFor="user-role">
-              User role privileges - Can visit application as user and trigger
-              audits
-            </RadioButtonLabel>
-          </RadioButtonWrapper>
-        )}
+        ))}
         <Button
           size="large"
           style={{ marginTop: 30 }}
