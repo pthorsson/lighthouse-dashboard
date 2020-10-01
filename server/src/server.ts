@@ -17,7 +17,7 @@ import * as pageController from '@controllers/admin/page.controller';
 import * as actionsController from '@controllers/actions.controller';
 import * as publicController from '@controllers/public.controller';
 
-import { errorHandler } from '@lib/error-handler';
+import { errorHandler } from '@middleware';
 
 const app = express();
 const server = createServer(app);
