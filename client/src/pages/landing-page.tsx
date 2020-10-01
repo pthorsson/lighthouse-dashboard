@@ -1,15 +1,20 @@
 import React, { useEffect, useState } from 'react';
 import styled, { css } from 'styled-components';
 import { Link, useHistory } from 'react-router-dom';
-import { useApi, useCurrentUser, USER_ROLES } from '@hooks';
+import { EnsureUserRole, useApi, USER_ROLES } from '@hooks';
 import CreateSection from '@components/create-section';
+import { Button } from '@ui/buttons';
 import { useModal } from '@ui/modal';
 import { getUrlQuery } from '@lib/utils';
+import CurrentUserInfo from '@components/current-user-info';
+import ManageTokens from '@components/manage-tokens';
+import ManageUsers from '@components/manage-users';
 
 const LandingPage = () => {
-  const currentUser = useCurrentUser();
-  const { toggle } = useModal('create-section-modal');
-  const { data, exec } = useApi<Lhd.Section[]>('/api/sections', {
+  const createSectionModal = useModal('create-section-modal');
+  const manageTokensModal = useModal('manage-tokens-modal');
+  const manageUsersModal = useModal('manage-users-modal');
+  const getSections = useApi<Lhd.Section[]>('/api/sections', {
     runOnMount: true,
   });
 
@@ -18,11 +23,30 @@ const LandingPage = () => {
   return (
     <Wrapper>
       <Header1>Lighthouse dashboards</Header1>
+      <NavWrapper>
+        <CurrentUserInfo />
+      </NavWrapper>
+      <Actions>
+        <EnsureUserRole role={USER_ROLES.USER} requireLoggedInUser={true}>
+          <Button size="large" onClick={() => manageTokensModal.toggle()}>
+            Manage tokens
+          </Button>
+          <ManageTokens />
+        </EnsureUserRole>
+        <EnsureUserRole role={USER_ROLES.SUPERADMIN}>
+          <Button size="large" onClick={() => manageUsersModal.toggle()}>
+            Manage users
+          </Button>
+          <ManageUsers />
+        </EnsureUserRole>
+      </Actions>
       <Header2>Select a section</Header2>
-      {data && (
+      {getSections.data && (
         <>
-          <SectionsWrapper columns={Math.max(1, Math.min(3, data.length + 1))}>
-            {data.map(section => (
+          <SectionsWrapper
+            columns={Math.max(1, Math.min(3, getSections.data.length + 1))}
+          >
+            {getSections.data.map(section => (
               <SectionLink
                 key={section._id}
                 to={`/${section.slug}${token ? `?token=${token}` : ''}`}
@@ -31,14 +55,12 @@ const LandingPage = () => {
                 <SectionSlug>{section.slug}</SectionSlug>
               </SectionLink>
             ))}
-            {currentUser.role >= USER_ROLES.ADMIN && (
-              <>
-                <CreateSectionButton onClick={() => toggle()}>
-                  Add new section
-                </CreateSectionButton>
-                <CreateSection onComplete={() => exec()} />
-              </>
-            )}
+            <EnsureUserRole role={USER_ROLES.ADMIN} requireLoggedInUser={true}>
+              <CreateSectionButton onClick={() => createSectionModal.toggle()}>
+                Add new section
+              </CreateSectionButton>
+              <CreateSection onComplete={() => getSections.exec()} />
+            </EnsureUserRole>
           </SectionsWrapper>
         </>
       )}
@@ -67,7 +89,23 @@ const Header1 = styled.h1`
 const Header2 = styled.h2`
   text-align: center;
   font-weight: 400;
-  margin: 0 0 50px 0;
+  margin: 50px 0;
+`;
+
+const NavWrapper = styled.div`
+  margin: 10px 0 10px 0;
+`;
+
+const Actions = styled.div`
+  display: flex;
+  align-items: flex-start;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+
+  > * {
+    margin-left: ${({ theme }) => theme.gridGap}px;
+    margin-top: ${({ theme }) => theme.gridGap}px;
+  }
 `;
 
 type SectionsWrapperProps = {
