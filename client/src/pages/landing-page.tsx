@@ -1,12 +1,13 @@
 import React, { useEffect, useState } from 'react';
 import styled, { css } from 'styled-components';
 import { Link, useHistory } from 'react-router-dom';
-import { useApi } from '@hooks';
+import { useApi, useCurrentUser, USER_ROLES } from '@hooks';
 import CreateSection from '@components/create-section';
 import { useModal } from '@ui/modal';
 import { getUrlQuery } from '@lib/utils';
 
 const LandingPage = () => {
+  const currentUser = useCurrentUser();
   const { toggle } = useModal('create-section-modal');
   const { data, exec } = useApi<Lhd.Section[]>('/api/sections', {
     runOnMount: true,
@@ -30,11 +31,15 @@ const LandingPage = () => {
                 <SectionSlug>{section.slug}</SectionSlug>
               </SectionLink>
             ))}
-            <CreateSectionButton onClick={() => toggle()}>
-              Add new section
-            </CreateSectionButton>
+            {currentUser.role >= USER_ROLES.ADMIN && (
+              <>
+                <CreateSectionButton onClick={() => toggle()}>
+                  Add new section
+                </CreateSectionButton>
+                <CreateSection onComplete={() => exec()} />
+              </>
+            )}
           </SectionsWrapper>
-          <CreateSection onComplete={() => exec()} />
         </>
       )}
       <RouteMessage />
