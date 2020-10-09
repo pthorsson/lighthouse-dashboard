@@ -73,6 +73,7 @@ type ButtonProps = {
   adaptive?: boolean;
   tooltip?: string;
   warning?: boolean;
+  square?: boolean;
 };
 
 export const Button = styled.button<ButtonProps>`
@@ -87,20 +88,13 @@ export const Button = styled.button<ButtonProps>`
       pointer-events: none;
     `}
 
-  ${({ size, adaptive }) =>
-    !adaptive
-      ? css`
-          height: ${size === 'large' ? 38 : 24}px;
-        `
-      : css`
-          height: auto;
-        `}
-
   ${({ size }) =>
     size === 'large' &&
     css`
       font-size: 16px;
       font-weight: 300;
+      padding: 0 14px;
+      border-radius: 4px;
     `}
 
     ${({ warning }) =>
@@ -112,6 +106,23 @@ export const Button = styled.button<ButtonProps>`
           background: ${({ theme }) => darken(0.1, theme.colorError)};
         }
       `}
+
+    ${({ size, adaptive }) =>
+      !adaptive
+        ? css`
+            height: ${size === 'large' ? 36 : 24}px;
+          `
+        : css`
+            height: auto;
+          `}
+
+    ${({ size, square }) =>
+      square &&
+      css`
+        width: ${size === 'large' ? 36 : 24}px;
+        padding: 0;
+      `};
+
 
   ${({ tooltip }) => tooltip && tooltipCSS(tooltip)}
 `;
@@ -133,21 +144,24 @@ export const LinkButton = styled.a<ButtonProps & LinkButtonProps>`
       pointer-events: none;
     `}
 
-  ${({ size, adaptive }) =>
-    !adaptive
-      ? css`
-          height: ${size === 'large' ? 38 : 24}px;
-        `
-      : css`
-          height: auto;
-        `}
-
   ${({ size }) =>
     size === 'large' &&
     css`
       font-size: 16px;
       font-weight: 300;
+      padding: 0 14px;
+      border-radius: 4px;
     `}
+
+  ${({ size, adaptive, square }) =>
+    !adaptive
+      ? css`
+          height: ${size === 'large' ? 36 : 24}px;
+        `
+      : css`
+          height: auto;
+          padding: 0;
+        `}
     
   ${({ tooltip }) => tooltip && tooltipCSS(tooltip)}
 `;
@@ -164,21 +178,24 @@ export const RouteLinkButton = styled(Link)<ButtonProps & LinkButtonProps>`
       pointer-events: none;
     `}
 
-  ${({ size, adaptive }) =>
-    !adaptive
-      ? css`
-          height: ${size === 'large' ? 38 : 24}px;
-        `
-      : css`
-          height: auto;
-        `}
-
   ${({ size }) =>
     size === 'large' &&
     css`
       font-size: 16px;
       font-weight: 300;
+      padding: 0 14px;
+      border-radius: 4px;
     `}
+
+  ${({ size, adaptive }) =>
+    !adaptive
+      ? css`
+          height: ${size === 'large' ? 36 : 24}px;
+        `
+      : css`
+          height: auto;
+          padding: 0;
+        `}
     
   ${({ tooltip }) => tooltip && tooltipCSS(tooltip)}
 `;

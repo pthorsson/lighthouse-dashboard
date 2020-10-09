@@ -1,13 +1,12 @@
 import React, { useMemo } from 'react';
 import styled, { css } from 'styled-components';
 import { timestampToDate } from '@lib/utils';
-import {
+import { useLighthouse, EnsureUserRole, USER_ROLES, useApi } from '@hooks';
+import DropMenu, {
+  DropDownItem,
+  DropDownTitle,
   useDropMenu,
-  useLighthouse,
-  EnsureUserRole,
-  USER_ROLES,
-  useApi,
-} from '@hooks';
+} from '@ui/drop-menu';
 import Icon from '@ui/icon';
 import { Button, LinkButton } from '@ui/buttons';
 
@@ -17,7 +16,7 @@ type Props = {
 };
 
 const PageGroupItemControls: React.FC<Props> = ({ id, audits }) => {
-  const { isOpen, toggle } = useDropMenu(id);
+  const { isOpen, toggle } = useDropMenu(`report-links_${id}`);
   const { state, section } = useLighthouse();
   const removeQueuedAudit = useApi(
     `/api/actions/remove-queued-audit/${section}/${id}`
@@ -35,7 +34,7 @@ const PageGroupItemControls: React.FC<Props> = ({ id, audits }) => {
               noPadding={true}
               onClick={() => removeQueuedAudit.exec()}
             >
-              <Icon type="cross" style={{ width: 18 }} />
+              <Icon type="cross" />
             </Button>
           ) : (
             <Button
@@ -45,7 +44,7 @@ const PageGroupItemControls: React.FC<Props> = ({ id, audits }) => {
               disabled={state.active === id}
               onClick={() => triggerAudit.exec()}
             >
-              <Icon type="refresh" />
+              <Icon type="play" />
             </Button>
           )}
         </EnsureUserRole>
@@ -60,31 +59,36 @@ const PageGroupItemControls: React.FC<Props> = ({ id, audits }) => {
         >
           View report
         </LinkButton>
-        <Button
-          adaptive={true}
-          noPadding={true}
-          onClick={() => toggle()}
-          disabled={audits.length < 1}
-        >
-          <Icon
-            type="chevron"
-            style={{
-              transform: `rotate(${isOpen ? -90 : 90}deg)`,
-              transition: 'transform 150ms',
-            }}
-          />
-          <ReportsMenu isOpen={isOpen}>
-            {audits.map(audit => (
-              <ReportLink
+        <DropDownWrapper>
+          <Button
+            adaptive={true}
+            noPadding={true}
+            onClick={() => toggle()}
+            disabled={audits.length < 1}
+          >
+            <Icon
+              type="chevron"
+              style={{
+                transform: `rotate(${isOpen ? -90 : 90}deg)`,
+                transition: 'transform 150ms',
+              }}
+            />
+          </Button>
+          <DropMenu id={`report-links_${id}`} posX="right">
+            <DropDownTitle>Reports</DropDownTitle>
+            {audits.map((audit, i) => (
+              <DropDownItem
+                type="link"
                 key={audit.timestamp}
                 href={`/report/${audit._id}`}
                 target="_blank"
               >
                 {formatTimestamp(audit.timestamp)}
-              </ReportLink>
+                {i === 0 && <LatestLabel />}
+              </DropDownItem>
             ))}
-          </ReportsMenu>
-        </Button>
+          </DropMenu>
+        </DropDownWrapper>
       </>
     ),
     [isOpen, state]
@@ -102,59 +106,31 @@ const formatTimestamp = (timestamp: number) => {
   return `${day}/${month} ${year}, ${time}`;
 };
 
-type AuditsMenuProps = {
-  isOpen: boolean;
-};
-
-const ReportsMenu = styled.div<AuditsMenuProps>`
+const LatestLabel = styled.span`
   position: absolute;
-  right: 5px;
-  top: calc(100% - 5px);
-  transition: opacity 150ms, transform 150ms;
-  width: 180px;
-  z-index: 100;
-  background: ${({ theme }) => theme.bg};
-  box-shadow: 0 3px 10px 1px rgba(0, 0, 0, 0.9);
-  padding: 4px 0;
-  border-radius: 4px;
-  pointer-events: none;
-  opacity: 0;
-  transform: scale3d(0.97, 0.97, 0.97);
-  transform-origin: top right;
+  top: 50%;
+  right: 8px;
+  transform: translateY(-50%);
+  display: inline-block;
+  margin-left: 5px;
+  padding: 3px 5px;
+  border-radius: 3px;
+  font-size: 11px;
+  line-height: 10px;
+  background: ${({ theme }) => theme.bgDark};
 
-  ${({ isOpen }) =>
-    isOpen &&
-    css`
-      opacity: 1;
-      transform: scale3d(1, 1, 1);
-      pointer-events: initial;
-    `}
+  :after {
+    content: 'latest';
+  }
 `;
 
-const ReportLink = styled.a`
-  display: block;
+const DropDownWrapper = styled.div`
+  display: flex;
+  align-items: stretch;
+  justify-content: stretch;
   position: relative;
-  text-align: left;
-  font-size: 14px;
-  padding: 8px 10px;
 
-  &:hover {
-    background: rgba(255, 255, 255, 0.1);
-    text-decoration: none;
-  }
-
-  :first-child:after {
-    content: 'latest';
-    position: absolute;
-    top: 50%;
-    right: 8px;
-    transform: translateY(-50%);
-    display: inline-block;
-    margin-left: 5px;
-    padding: 3px 5px;
-    border-radius: 3px;
-    font-size: 11px;
-    line-height: 10px;
-    background: ${({ theme }) => theme.bgDark};
+  > button {
+    flex: 1 1 auto;
   }
 `;

@@ -56,9 +56,12 @@ const icons = {
       <>
         <path
           fill="currentColor"
-          d="M1 2.414L2.414 1l17.587 17.586-1.415 1.415z"
+          d="M4.415 18.002L3 16.588 16.588 3l1.414 1.414z"
         />
-        <path fill="currentColor" d="M2.414 20L1 18.588 18.586 1 20 2.414z" />
+        <path
+          fill="currentColor"
+          d="M18.002 16.588l-1.414 1.414L3 4.415l1.414-1.414z"
+        />
       </>
     ),
   },
@@ -82,7 +85,7 @@ const icons = {
   'arrow-back': {
     size: [21, 21],
     markup: () => (
-      <path d="M14 19l-8.5-8.5L14 2" stroke="currentColor" strokeWidth="2" />
+      <path d="M13.5 3L6 10.5l7.5 7.5" stroke="currentColor" strokeWidth="2" />
     ),
   },
   trash: {
@@ -108,6 +111,61 @@ const icons = {
           d="M4 3h14M10 2h2"
         />
       </>
+    ),
+  },
+  burger: {
+    size: [21, 21],
+    markup: () => (
+      <path
+        stroke="currentColor"
+        strokeWidth="2"
+        strokeLinecap="round"
+        d="M3 4h15M3 10h15M3 16h15"
+      />
+    ),
+  },
+  'horizontal-dots': {
+    size: [21, 21],
+    markup: () => (
+      <>
+        <circle cx="5.5" cy="10.5" r="1.5" fill="currentColor" />
+        <circle cx="10.5" cy="10.5" r="1.5" fill="currentColor" />
+        <circle cx="15.5" cy="10.5" r="1.5" fill="currentColor" />
+      </>
+    ),
+  },
+  'vertical-dots': {
+    size: [21, 21],
+    markup: () => (
+      <>
+        <circle cx="10.5" cy="5.5" r="1.5" fill="currentColor" />
+        <circle cx="10.5" cy="10.5" r="1.5" fill="currentColor" />
+        <circle cx="10.5" cy="15.5" r="1.5" fill="currentColor" />
+      </>
+    ),
+  },
+  stop: {
+    size: [21, 21],
+    markup: () => (
+      <rect
+        x="4"
+        y="4"
+        width="13"
+        height="13"
+        rx="2"
+        stroke="currentColor"
+        strokeWidth="2"
+      />
+    ),
+  },
+  play: {
+    size: [21, 21],
+    markup: () => (
+      <path
+        d="M5 4.634a1 1 0 011.535-.845l9.262 5.866a1 1 0 010 1.69L6.535 17.21l.535.845-.535-.845A1 1 0 015 16.366V4.634z"
+        stroke="currentColor"
+        strokeWidth="2"
+      />
     ),
   },
   lhdLogo: {

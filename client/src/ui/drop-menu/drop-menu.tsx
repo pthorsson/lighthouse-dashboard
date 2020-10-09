@@ -114,7 +114,7 @@ export const DropDownDivider = styled.div`
 `;
 
 type DropDownItemProps = {
-  type: 'button' | 'route' | 'link';
+  type: 'button' | 'route' | 'link' | 'wrapper';
   closeOnClick?: boolean;
   onClick?: (event: React.MouseEvent) => void;
   to?: string;
@@ -165,6 +165,14 @@ export const DropDownItem: React.FC<DropDownItemProps> = ({
       </DropDownInternalLinkItemElement>
     );
   }
+
+  if (type === 'wrapper') {
+    return (
+      <DropDownWrapperItemElement onClick={clickHandler}>
+        {children}
+      </DropDownWrapperItemElement>
+    );
+  }
 };
 
 const dropDownItemBase = css`
@@ -181,6 +189,7 @@ const dropDownItemBase = css`
   border: 0;
   outline: 0;
   background: ${({ theme }) => theme.bg};
+  user-select: none;
 
   :hover {
     text-decoration: none;
@@ -199,4 +208,10 @@ const DropDownLinkItemElement = styled.a`
 
 const DropDownInternalLinkItemElement = styled(Link)`
   ${dropDownItemBase};
+`;
+
+const DropDownWrapperItemElement = styled.div`
+  > * {
+    ${dropDownItemBase};
+  }
 `;

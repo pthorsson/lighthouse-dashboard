@@ -3,17 +3,12 @@ import styled, { css } from 'styled-components';
 import { Link, useHistory } from 'react-router-dom';
 import { EnsureUserRole, useApi, USER_ROLES } from '@hooks';
 import CreateSection from '@components/create-section';
-import { Button } from '@ui/buttons';
 import { useModal } from '@ui/modal';
 import { getUrlQuery } from '@lib/utils';
-import CurrentUserInfo from '@components/current-user-info';
-import ManageTokens from '@components/manage-tokens';
-import ManageUsers from '@components/manage-users';
+import Navigation from '@components/navigation';
 
 const LandingPage = () => {
   const createSectionModal = useModal('create-section-modal');
-  const manageTokensModal = useModal('manage-tokens-modal');
-  const manageUsersModal = useModal('manage-users-modal');
   const getSections = useApi<Lhd.Section[]>('/api/sections', {
     runOnMount: true,
   });
@@ -22,49 +17,44 @@ const LandingPage = () => {
 
   return (
     <Wrapper>
-      <Header1>Lighthouse dashboards</Header1>
       <NavWrapper>
-        <CurrentUserInfo />
+        <HeaderWrapper>
+          <Header1>Lighthouse dashboard</Header1>
+          <Header2>Select a section</Header2>
+        </HeaderWrapper>
+        <Navigation />
       </NavWrapper>
-      <Actions>
-        <EnsureUserRole role={USER_ROLES.USER} requireLoggedInUser={true}>
-          <Button size="large" onClick={() => manageTokensModal.toggle()}>
-            Manage tokens
-          </Button>
-          <ManageTokens />
-        </EnsureUserRole>
-        <EnsureUserRole role={USER_ROLES.SUPERADMIN}>
-          <Button size="large" onClick={() => manageUsersModal.toggle()}>
-            Manage users
-          </Button>
-          <ManageUsers />
-        </EnsureUserRole>
-      </Actions>
-      <Header2>Select a section</Header2>
-      {getSections.data && (
-        <>
-          <SectionsWrapper
-            columns={Math.max(1, Math.min(3, getSections.data.length + 1))}
-          >
-            {getSections.data.map(section => (
-              <SectionLink
-                key={section._id}
-                to={`/${section.slug}${token ? `?token=${token}` : ''}`}
+      <InnerWrapper>
+        {getSections.data && (
+          <>
+            <SectionsWrapper
+              columns={Math.max(1, Math.min(3, getSections.data.length + 1))}
+            >
+              {getSections.data.map(section => (
+                <SectionLink
+                  key={section._id}
+                  to={`/${section.slug}${token ? `?token=${token}` : ''}`}
+                >
+                  <SectionName>{section.name}</SectionName>
+                  <SectionSlug>{section.slug}</SectionSlug>
+                </SectionLink>
+              ))}
+              <EnsureUserRole
+                role={USER_ROLES.ADMIN}
+                requireLoggedInUser={true}
               >
-                <SectionName>{section.name}</SectionName>
-                <SectionSlug>{section.slug}</SectionSlug>
-              </SectionLink>
-            ))}
-            <EnsureUserRole role={USER_ROLES.ADMIN} requireLoggedInUser={true}>
-              <CreateSectionButton onClick={() => createSectionModal.toggle()}>
-                Add new section
-              </CreateSectionButton>
-              <CreateSection onComplete={() => getSections.exec()} />
-            </EnsureUserRole>
-          </SectionsWrapper>
-        </>
-      )}
-      <RouteMessage />
+                <CreateSectionButton
+                  onClick={() => createSectionModal.toggle()}
+                >
+                  Add new section
+                </CreateSectionButton>
+                <CreateSection onComplete={() => getSections.exec()} />
+              </EnsureUserRole>
+            </SectionsWrapper>
+          </>
+        )}
+        <RouteMessage />
+      </InnerWrapper>
     </Wrapper>
   );
 };
@@ -73,39 +63,37 @@ export default LandingPage;
 
 const Wrapper = styled.div`
   display: flex;
+  flex-direction: column;
+  justify-content: center;
+  padding: 50px 90px;
+  height: 100%;
+`;
+
+const HeaderWrapper = styled.div``;
+
+const NavWrapper = styled.div`
+  display: flex;
+  justify-content: space-between;
+  flex: 1 1 auto;
+`;
+
+const InnerWrapper = styled.div`
+  display: flex;
   align-items: center;
   flex-direction: column;
-  padding: 50px;
+  padding: 50px 0;
   height: 100%;
 `;
 
 const Header1 = styled.h1`
-  text-align: center;
   font-weight: 300;
   font-size: 40px;
   margin: 0 0 10px 0;
 `;
 
 const Header2 = styled.h2`
-  text-align: center;
   font-weight: 400;
-  margin: 50px 0;
-`;
-
-const NavWrapper = styled.div`
-  margin: 10px 0 10px 0;
-`;
-
-const Actions = styled.div`
-  display: flex;
-  align-items: flex-start;
-  flex-wrap: wrap;
-  justify-content: flex-end;
-
-  > * {
-    margin-left: ${({ theme }) => theme.gridGap}px;
-    margin-top: ${({ theme }) => theme.gridGap}px;
-  }
+  margin: 0 0 50px 0;
 `;
 
 type SectionsWrapperProps = {

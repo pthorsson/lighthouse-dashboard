@@ -1,31 +1,21 @@
-import React, { useState } from 'react';
+import React from 'react';
 import styled, { ThemeProvider } from 'styled-components';
 import { Link } from 'react-router-dom';
 import PageGroup from '@components/page-group';
-import CurrentUserInfo from '@components/current-user-info';
-import ManageSection from '@components/manage-section';
-import ManageTokens from '@components/manage-tokens';
-import ManageUsers from '@components/manage-users';
-import { useModal } from '@ui/modal';
-import { EnsureUserRole, useLighthouse, useApi, USER_ROLES } from '@hooks';
-import { Button, RouteLinkButton } from '@ui/buttons';
+import Navigation from '@components/navigation';
+import { useLighthouse, useAppState } from '@hooks';
 import { getUrlQuery } from '@lib/utils';
 
 const Dashboard = () => {
-  const { data, state, section } = useLighthouse();
-  const manageUsersModal = useModal('manage-users-modal');
-  const manageTokensModal = useModal('manage-tokens-modal');
-  const manageSectionModal = useModal('manage-section-modal');
-  const [itemLayout, setItemLayout] = useState('standard');
-  const triggerAllAudits = useApi(`/api/actions/trigger-all-audits/${section}`);
-  const removeAllQueuedAudits = useApi(
-    `/api/actions/remove-all-queued-audits/${section}`
-  );
+  const { data, section } = useLighthouse();
+  const appState = useAppState();
 
   const { token } = getUrlQuery();
 
   return data ? (
-    <ThemeProvider theme={{ itemLayout }}>
+    <ThemeProvider
+      theme={{ itemLayout: appState.comparedMode ? 'compared' : 'standard' }}
+    >
       <Wrapper>
         <NavWrapper>
           <HeaderWrapper>
@@ -36,58 +26,7 @@ const Dashboard = () => {
             </Header2>
           </HeaderWrapper>
           <ControlsWrapper>
-            <CurrentUserInfo />
-            <Actions>
-              <EnsureUserRole role={USER_ROLES.SUPERADMIN}>
-                <Button size="large" onClick={() => manageUsersModal.toggle()}>
-                  Manage users
-                </Button>
-                <ManageUsers />
-              </EnsureUserRole>
-              <EnsureUserRole role={USER_ROLES.ADMIN}>
-                <Button
-                  size="large"
-                  onClick={() => manageSectionModal.toggle()}
-                >
-                  Manage section
-                </Button>
-                <ManageSection />
-              </EnsureUserRole>
-              <EnsureUserRole role={USER_ROLES.USER} requireLoggedInUser={true}>
-                <Button size="large" onClick={() => manageTokensModal.toggle()}>
-                  Manage tokens
-                </Button>
-                <ManageTokens />
-              </EnsureUserRole>
-              <EnsureUserRole role={USER_ROLES.USER}>
-                <Button size="large" onClick={() => triggerAllAudits.exec()}>
-                  Trigger all audits
-                </Button>
-                <Button
-                  size="large"
-                  onClick={() => removeAllQueuedAudits.exec()}
-                  disabled={!state.queue.length}
-                >
-                  Clear audit queue
-                </Button>
-              </EnsureUserRole>
-              <Button
-                size="large"
-                onClick={() => {
-                  setItemLayout(
-                    itemLayout === 'standard' ? 'compared' : 'standard'
-                  );
-                }}
-              >
-                Compare mode
-              </Button>
-              <RouteLinkButton
-                to={`/${section}/display${token ? `?token=${token}` : ''}`}
-                size="large"
-              >
-                Display mode
-              </RouteLinkButton>
-            </Actions>
+            <Navigation section={section} />
           </ControlsWrapper>
         </NavWrapper>
         {data.pageGroups.map((pageGroup, i) => (
@@ -133,17 +72,4 @@ const ControlsWrapper = styled.div`
   display: flex;
   flex-direction: column;
   align-items: flex-end;
-`;
-
-const Actions = styled.div`
-  display: flex;
-  align-items: flex-start;
-  flex-wrap: wrap;
-  justify-content: flex-end;
-  margin-top: 10px;
-
-  > * {
-    margin-left: ${({ theme }) => theme.gridGap}px;
-    margin-top: ${({ theme }) => theme.gridGap}px;
-  }
 `;

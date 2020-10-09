@@ -75,9 +75,6 @@ const rowHeight = 35;
 
 const AuditGrid = styled.div<AuditGridProps>`
   display: grid;
-  font-weight: 500;
-  letter-spacing: 0.1em;
-  line-height: 1em;
   padding-top: ${({ theme }) => theme.gridGap}px;
   grid-gap: ${({ theme }) => theme.gridGap}px;
   height: ${rowHeight}px;
@@ -98,6 +95,8 @@ const AuditPageWrapper = styled.div`
   font-style: normal;
   font-weight: 300;
   font-size: 16px;
+  letter-spacing: 0.1em;
+  line-height: 1em;
 `;
 
 const AuditPageUrl = styled.a`
@@ -156,6 +155,8 @@ const ScoreItemWrapper = styled.div`
   font-family: 'Roboto Mono';
   font-style: normal;
   font-weight: normal;
+  letter-spacing: 0.1em;
+  line-height: 1em;
 `;
 
 type ScoreLabelProps = {
