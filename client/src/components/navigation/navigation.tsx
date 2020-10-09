@@ -121,6 +121,7 @@ export default Navigation;
 
 const Wrapper = styled.div`
   position: relative;
+  align-self: flex-start;
 `;
 
 const NavItems = styled.div`
