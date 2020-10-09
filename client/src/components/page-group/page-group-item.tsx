@@ -79,6 +79,26 @@ const AuditGrid = styled.div<AuditGridProps>`
   grid-gap: ${({ theme }) => theme.gridGap}px;
   height: ${rowHeight}px;
 
+  :nth-child(2) {
+    > :first-child {
+      border-top-left-radius: 4px;
+    }
+
+    > :last-child > * {
+      border-top-right-radius: 4px;
+    }
+  }
+
+  :last-child {
+    > :first-child {
+      border-bottom-left-radius: 4px;
+    }
+
+    > :last-child > * {
+      border-bottom-right-radius: 4px;
+    }
+  }
+
   ${({ layout, theme }) => css`
     grid-template-columns: ${theme.gridLayout[layout]};
   `}
