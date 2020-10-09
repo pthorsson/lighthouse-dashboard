@@ -4,8 +4,7 @@ import { useApi, API_STATE, USER_ROLES, useCurrentUser } from '@hooks';
 import Modal, { ModalHeader, ModalSection } from '@ui/modal';
 import { copyToClipboard } from '@lib/utils';
 import { Button } from '@ui/buttons';
-
-const ROLES = ['None', 'Viewer', 'User', 'Admin'];
+import RoleBadge from '@ui/role-badge';
 
 const ManageTokens: React.FC = () => {
   const currentUser = useCurrentUser();
@@ -27,22 +26,21 @@ const ManageTokens: React.FC = () => {
   if (currentUser.role >= USER_ROLES.USER) {
     tokenRoles.push({
       role: USER_ROLES.VIEWER,
-      description: 'Viewer privileges - Can view application',
+      description: 'Can view application',
     });
   }
 
   if (currentUser.role >= USER_ROLES.ADMIN) {
     tokenRoles.push({
       role: USER_ROLES.USER,
-      description: 'User privileges - Can view application and trigger audits',
+      description: 'Can view application and trigger audits',
     });
   }
 
   if (currentUser.role >= USER_ROLES.SUPERADMIN) {
     tokenRoles.push({
       role: USER_ROLES.ADMIN,
-      description:
-        'Admin privileges - Can view application, trigger audits and manage sections',
+      description: 'Can view application, trigger audits and manage sections',
     });
   }
 
@@ -63,7 +61,9 @@ const ManageTokens: React.FC = () => {
           getTokens.data.map(token => (
             <TokenWrapper key={token._id}>
               <TokenToken>{truncateToken(token.token)}</TokenToken>
-              <TokenRole>Role: {ROLES[token.role]}</TokenRole>
+              <TokenRole>
+                <RoleBadge role={token.role} />
+              </TokenRole>
               <Button
                 adaptive
                 style={{ marginLeft: 4 }}
@@ -103,7 +103,7 @@ const ManageTokens: React.FC = () => {
               readOnly
             />
             <RadioButtonLabel htmlFor={`role-${tokenRole.role}`}>
-              {tokenRole.description}
+              <RoleBadge role={tokenRole.role} /> {tokenRole.description}
             </RadioButtonLabel>
           </RadioButtonWrapper>
         ))}
@@ -162,13 +162,9 @@ const TokenToken = styled.div`
 const TokenRole = styled.div`
   display: flex;
   flex: 1 1 auto;
-  align-items: center;
+  justify-content: flex-end;
   background: ${({ theme }) => theme.bg};
   padding: ${({ theme }) => theme.gridGap}px;
-  margin-left: ${({ theme }) => theme.gridGap}px;
-  font-family: 'Roboto Mono';
-  font-size: 13px;
-  line-height: 1em;
 `;
 
 const RadioButtonWrapper = styled.div`

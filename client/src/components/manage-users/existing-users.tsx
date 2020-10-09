@@ -1,10 +1,9 @@
 import React from 'react';
 import styled from 'styled-components';
-import { useApi, API_STATE, USER_ROLES, useCurrentUser } from '@hooks';
+import { useApi, API_STATE, useCurrentUser } from '@hooks';
 import { Button } from '@ui/buttons';
 import Icon from '@ui/icon';
-
-const ROLES = ['None', 'Viewer', 'User', 'Admin', 'Super admin'];
+import RoleBadge from '@ui/role-badge';
 
 type Props = {
   users: Lhd.User[];
@@ -25,7 +24,7 @@ const ExistingUsers: React.FC<Props> = ({ users, selectUser }) => {
         <UserWrapper key={user._id}>
           <UserEmail>{user.email}</UserEmail>
           <UserRole>
-            {ROLES[Math.min(user.role, USER_ROLES.SUPERADMIN)]}
+            <RoleBadge role={user.role} />
           </UserRole>
           <Button
             adaptive
@@ -73,8 +72,4 @@ const UserRole = styled.div`
   align-items: center;
   background: ${({ theme }) => theme.bg};
   padding: ${({ theme }) => theme.gridGap}px;
-  font-family: 'Roboto Mono';
-  font-size: 13px;
-  line-height: 1em;
-  white-space: nowrap;
 `;
