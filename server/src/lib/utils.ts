@@ -43,7 +43,7 @@ export const decodeBase64 = (base64Str: string) =>
   Buffer.from(base64Str, 'base64').toString();
 
 /**
- *
+ * Generate a random base64 string.
  */
 export const generateString = (minLength = 100, maxLength?: number) => {
   maxLength = Math.max(maxLength || minLength, minLength);
@@ -65,3 +65,13 @@ export const generateString = (minLength = 100, maxLength?: number) => {
 
   return str;
 };
+
+/**
+ * A function for simulating a delay.
+ */
+export const delay = (duration: number) =>
+  new Promise(resolve => {
+    setTimeout(() => {
+      resolve();
+    }, duration);
+  });

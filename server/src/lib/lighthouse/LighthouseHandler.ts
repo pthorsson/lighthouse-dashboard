@@ -1,6 +1,7 @@
 import { debounce } from 'lodash';
-import { createLogger, createTimer, encodeBase64 } from '@lib/utils';
+import { createLogger, createTimer, encodeBase64, delay } from '@lib/utils';
 import { asyncLighthouseCommand } from './lighthouse.utils';
+import fetch from 'node-fetch';
 
 import Section from '@models/section.model';
 import PageGroup from '@models/page-group.model';
@@ -322,8 +323,16 @@ export default class LighthouseHandler {
       const id = queue.shift();
 
       this.setState({ active: id, queue });
+      const page = this._pages.find(page => page._id === id);
 
-      const result = await this.execLighthouse(id);
+      // Pre fetch page to create possible cache
+      await this.preFetchUrl(page.url);
+
+      // Slight delay after pre fetch
+      await delay(1000);
+
+      // Execute Lighthouse audit
+      const result = await this.execLighthouse(page.url);
 
       if (result) {
         const page = this._pages.find(page => page._id === id);
@@ -369,12 +378,20 @@ export default class LighthouseHandler {
   }
 
   /**
+   * Pre fetch page in case it
+   */
+  private async preFetchUrl(url: string) {
+    this.log(`Prefetching url: ${url} ...`);
+    await fetch(url);
+    this.log(`Prefetching complete`);
+  }
+
+  /**
    * Execute async Lighthouse run
    */
-  private async execLighthouse(id: string) {
+  private async execLighthouse(url: string) {
     const getTimePassed = createTimer();
     const timestamp = new Date().getTime();
-    const url = this._pages.find(p => p._id === id).url;
 
     // Execute lighthouse run
     this.log(`Running lighthouse on ${url} ...`);
