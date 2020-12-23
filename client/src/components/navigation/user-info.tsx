@@ -30,6 +30,7 @@ const Wrapper = styled.div`
   display: flex;
   height: 24px;
   flex-direction: row;
+  justify-content: flex-end;
 `;
 
 const UsernameLabel = styled.div`

@@ -42,9 +42,14 @@ const Navigation: React.FC<Props> = ({ section }) => {
               <Actions />
             </EnsureUserRole>
           )}
-          <Button size="large" square onClick={() => dropMenu.toggle()}>
-            <Icon type="burger" />
-          </Button>
+          <EnsureUserRole
+            role={USER_ROLES.VIEWER}
+            requireLoggedInUser={!section}
+          >
+            <Button size="large" square onClick={() => dropMenu.toggle()}>
+              <Icon type="burger" />
+            </Button>
+          </EnsureUserRole>
         </NavItems>
         <DropMenu id="navigation" posX="right">
           {section && (
@@ -68,7 +73,7 @@ const Navigation: React.FC<Props> = ({ section }) => {
                   Compared view
                 </Checkbox>
               </DropDownItem>
-              <EnsureUserRole role={USER_ROLES.ADMIN}>
+              <EnsureUserRole role={USER_ROLES.ADMIN} requireLoggedInUser>
                 <DropDownItem
                   type="button"
                   onClick={() => manageSectionModal.toggle(true)}
@@ -76,12 +81,10 @@ const Navigation: React.FC<Props> = ({ section }) => {
                   Settings
                 </DropDownItem>
               </EnsureUserRole>
-              <EnsureUserRole role={USER_ROLES.USER}>
-                <DropDownDivider />
-              </EnsureUserRole>
             </>
           )}
-          <EnsureUserRole role={USER_ROLES.USER}>
+          <EnsureUserRole role={USER_ROLES.USER} requireLoggedInUser>
+            <DropDownDivider />
             <DropDownTitle>User</DropDownTitle>
             <DropDownItem
               type="button"
@@ -101,14 +104,14 @@ const Navigation: React.FC<Props> = ({ section }) => {
         </DropMenu>
       </Wrapper>
       {section && (
-        <EnsureUserRole role={USER_ROLES.ADMIN}>
+        <EnsureUserRole role={USER_ROLES.ADMIN} requireLoggedInUser>
           <ManageSection />
         </EnsureUserRole>
       )}
-      <EnsureUserRole role={USER_ROLES.USER}>
+      <EnsureUserRole role={USER_ROLES.USER} requireLoggedInUser>
         <ManageTokens />
       </EnsureUserRole>
-      <EnsureUserRole role={USER_ROLES.SUPERADMIN}>
+      <EnsureUserRole role={USER_ROLES.SUPERADMIN} requireLoggedInUser>
         <ManageUsers />
       </EnsureUserRole>
     </>
