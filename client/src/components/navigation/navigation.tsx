@@ -83,8 +83,12 @@ const Navigation: React.FC<Props> = ({ section }) => {
               </EnsureUserRole>
             </>
           )}
+          {section && (
+            <EnsureUserRole role={USER_ROLES.USER} requireLoggedInUser>
+              <DropDownDivider />
+            </EnsureUserRole>
+          )}
           <EnsureUserRole role={USER_ROLES.USER} requireLoggedInUser>
-            <DropDownDivider />
             <DropDownTitle>User</DropDownTitle>
             <DropDownItem
               type="button"
