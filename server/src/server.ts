@@ -30,28 +30,28 @@ mongoose.connect(process.env.MONGO_CONNECTION_STR, {
 });
 
 // Set up socket listeners on socket connect
-io.on('connection', socket => {
+io.on('connection', (socket) => {
   const { section } = socket.handshake.query;
 
   // Recieve section state request and send section state
-  socket.on('request-state-update', section => {
+  socket.on('request-state-update', (section) => {
     const state = lighthouse.getState(section);
     socket.emit('state-update', { state });
   });
 
   // Recieve section data request and send section data
-  socket.on('request-section-data', section => {
+  socket.on('request-section-data', (section) => {
     const data = lighthouse.getData(section);
     socket.emit('section-data', { section: data });
   });
 
   // Subscribe to lighthouse data updates
-  const dataUpdateSub = lighthouse.on('data-update', section, data => {
+  const dataUpdateSub = lighthouse.on('data-update', section, (data) => {
     socket.emit('section-data', data);
   });
 
   // Subscribe to lighthouse state updates
-  const stateUpdateSub = lighthouse.on('state-update', section, data => {
+  const stateUpdateSub = lighthouse.on('state-update', section, (data) => {
     console.log(`==== Lighthouse state updated (${section}) ====`);
     console.log(JSON.stringify(data.state, null, 2));
 
@@ -59,7 +59,7 @@ io.on('connection', socket => {
   });
 
   // Subscribe to lighthouse audit completions
-  const auditCompleteSub = lighthouse.on('audit-complete', section, data => {
+  const auditCompleteSub = lighthouse.on('audit-complete', section, (data) => {
     socket.emit('audit-complete', data);
   });
 
@@ -175,6 +175,9 @@ app.get('/api/get-current-user', [
   setCurrentUser(),
   ...publicController.getCurrentUser,
 ]);
+
+// Serves application info data
+app.get('/api/application-info', publicController.getApplicationInfo);
 
 // ---- Other
 

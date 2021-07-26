@@ -14,6 +14,7 @@ import Icon from '@ui/icon';
 import ManageSection from '@components/manage-section';
 import ManageTokens from '@components/manage-tokens';
 import ManageUsers from '@components/manage-users';
+import AboutApp from '@components/about-app';
 
 import UserInfo from './user-info';
 import Actions from './actions';
@@ -27,6 +28,7 @@ const Navigation: React.FC<Props> = ({ section }) => {
   const manageSectionModal = useModal('manage-section-modal');
   const manageTokensModal = useModal('manage-tokens-modal');
   const manageUsersModal = useModal('manage-users-modal');
+  const applicationInfoModal = useModal('application-info-modal');
   const dropMenu = useDropMenu('navigation');
   const appState = useAppState();
 
@@ -105,6 +107,16 @@ const Navigation: React.FC<Props> = ({ section }) => {
               </DropDownItem>
             </EnsureUserRole>
           </EnsureUserRole>
+          <EnsureUserRole role={USER_ROLES.ADMIN} requireLoggedInUser>
+            <DropDownDivider />
+            <DropDownTitle>Application</DropDownTitle>
+            <DropDownItem
+              type="button"
+              onClick={() => applicationInfoModal.toggle(true)}
+            >
+              Info
+            </DropDownItem>
+          </EnsureUserRole>
         </DropMenu>
       </Wrapper>
       {section && (
@@ -117,6 +129,9 @@ const Navigation: React.FC<Props> = ({ section }) => {
       </EnsureUserRole>
       <EnsureUserRole role={USER_ROLES.SUPERADMIN} requireLoggedInUser>
         <ManageUsers />
+      </EnsureUserRole>
+      <EnsureUserRole role={USER_ROLES.ADMIN} requireLoggedInUser>
+        <AboutApp />
       </EnsureUserRole>
     </>
   );

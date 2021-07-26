@@ -11,7 +11,7 @@
     "dev": "run-p 'dev:*'",
     "dev:server": "yarn workspace @lhd/server dev",
     "dev:client": "yarn workspace @lhd/client dev",
-    "build": "run-p 'build:*'",
+    "build": "run-p 'build:*' && node scripts/append-build-info",
     "build:server": "yarn workspace @lhd/server build",
     "build:client": "yarn workspace @lhd/client build"
   },
