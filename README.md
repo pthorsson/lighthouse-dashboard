@@ -14,6 +14,7 @@ An application for managing multiple websites in Lighthouse.
 
 | Endpoint / Required role  | None |  Viewer | User |  Admin  |  Super admin |
 | ------------------------- | ---- | ------- | ---- | ------- | ------------ |
+| `/api/application-info`   | ✓    | ✓       | ✓    | ✓       | ✓            |
 | `/api/get-current-user`   | ✓    | ✓       | ✓    | ✓       | ✓            |
 | `/api/data/sections`      | ✓    | ✓       | ✓    | ✓       | ✓            |
 | `/api/token/*`            | -    | -       | ✓    | ✓       | ✓            |
