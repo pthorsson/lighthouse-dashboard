@@ -32,7 +32,7 @@ const log = createLogger('lighthouse-process');
 export const asyncLighthouseCommand = (
   url: string
 ): Promise<LighthouseOutput | null> =>
-  new Promise(resolve => {
+  new Promise((resolve) => {
     // Ensure tmp dir
     if (!existsSync(TMP_DIR)) {
       mkdirSync(TMP_DIR);
@@ -42,7 +42,7 @@ export const asyncLighthouseCommand = (
     const tempFileName = join(TMP_DIR, `temp-report_${new Date().getTime()}`);
 
     // Lighthouse bin file
-    const lighthouseBin = join(ROOT_DIR, 'server/node_modules/.bin/lighthouse');
+    const lighthouseBin = join(ROOT_DIR, 'node_modules/.bin/lighthouse');
 
     // Run Lighthouse command process
     const lh = spawn(lighthouseBin, [
@@ -56,11 +56,11 @@ export const asyncLighthouseCommand = (
 
     log('STARTING');
 
-    lh.stdout.on('data', data => {
+    lh.stdout.on('data', (data) => {
       log(`stdout: ${data}`);
     });
 
-    lh.stderr.on('data', data => {
+    lh.stderr.on('data', (data) => {
       log(`stderr: ${data}`);
     });
 
@@ -79,7 +79,7 @@ export const asyncLighthouseCommand = (
         );
 
         // Delete temporary report files
-        readdirSync(TMP_DIR).forEach(fileName => {
+        readdirSync(TMP_DIR).forEach((fileName) => {
           if (/\.report\.(json|html)$/.test(fileName)) {
             unlinkSync(join(TMP_DIR, fileName));
           }

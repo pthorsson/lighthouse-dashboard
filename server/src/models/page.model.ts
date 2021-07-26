@@ -1,4 +1,5 @@
-import { Document, Schema, Error } from 'mongoose';
+import { Document, Schema } from 'mongoose';
+import { RequestError } from '@lib/RequestError';
 import { mongoose } from '@db';
 import { setDates, incrementVersion } from '@models/middleware';
 import PageGroup from '@models/page-group.model';
@@ -40,24 +41,18 @@ const PageSchema: Schema = new mongoose.Schema(
 );
 
 // Schema hooks
-PageSchema.pre('save', async function(next) {
+PageSchema.pre('save', async function (next) {
   const doc = this as IPage;
 
   if (doc.isNew && !(await PageGroup.findById(doc.pageGroup))) {
-    return next(
-      new Error.ValidatorError({
-        type: 'invalid_pageGroup',
-        path: 'pageGroup',
-        message: 'Invalid pageGroup id',
-      })
-    );
+    return next(new RequestError('invalid_page_group', 400));
   }
 
   next();
 });
 
 // Cascade deletion hook
-PageSchema.pre('deleteMany', async function(next) {
+PageSchema.pre('deleteMany', async function (next) {
   const query: any = this;
   const pages = await query.find();
 

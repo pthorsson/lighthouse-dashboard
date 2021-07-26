@@ -1,6 +1,16 @@
+# generic
 .DS_Store
 node_modules
-yarn-error.log
 .env
 .build
 .tmp
+
+# yarn
+.yarn/*
+!.yarn/patches
+!.yarn/releases
+!.yarn/plugins
+!.yarn/sdks
+!.yarn/versions
+.pnp.*
+yarn-error.log

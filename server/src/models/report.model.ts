@@ -1,4 +1,5 @@
-import { Document, Schema, Error } from 'mongoose';
+import { Document, Schema } from 'mongoose';
+import { RequestError } from '@lib/RequestError';
 import { mongoose } from '@db';
 import { setDates, incrementVersion } from '@models/middleware';
 import Audit from '@models/audit.model';
@@ -24,24 +25,18 @@ const ReportSchema: Schema = new mongoose.Schema(
 );
 
 // Schema hooks
-ReportSchema.pre('save', async function(next) {
+ReportSchema.pre('save', async function (next) {
   const doc = this as IReport;
 
   if (doc.isNew && !(await Audit.findById(doc.audit))) {
-    return next(
-      new Error.ValidatorError({
-        type: 'invalid_section',
-        path: 'audit',
-        message: 'Invalid audit id',
-      })
-    );
+    return next(new RequestError('invalid_audit', 400));
   }
 
   next();
 });
 
 // Cascade deletion hook
-ReportSchema.pre('deleteMany', async function(next) {
+ReportSchema.pre('deleteMany', async function (next) {
   const query: any = this;
   const reports = await query.find();
 

@@ -23,7 +23,7 @@ export async function syncSections() {
   for (let i = 0; i < sectionIntances.length; i++) {
     const sectionIntance = sectionIntances[i];
 
-    if (!sections.find(s => s.slug === sectionIntance.sectionSlug)) {
+    if (!sections.find((s) => s.slug === sectionIntance.sectionSlug)) {
       sectionIntances.splice(i, 1);
       i--;
     }
@@ -45,18 +45,18 @@ export async function syncSections() {
   for (let i = 0; i < sections.length; i++) {
     const section = sections[i];
 
-    if (!sectionIntances.find(s => s.sectionSlug === section.slug)) {
-      const handler = new LighthouseHandler(section);
+    if (!sectionIntances.find((s) => s.sectionSlug === section.slug)) {
+      const handler = new LighthouseHandler(section as Lhd.Section);
 
-      handler.on('data-update', data => {
+      handler.on('data-update', (data) => {
         emit('data-update', section.slug, data);
       });
 
-      handler.on('state-update', data => {
+      handler.on('state-update', (data) => {
         emit('state-update', section.slug, data);
       });
 
-      handler.on('audit-complete', data => {
+      handler.on('audit-complete', (data) => {
         emit('audit-complete', section.slug, data);
       });
 
@@ -107,7 +107,11 @@ export const getData = (sectionSlug: string) => {
   return LIGHTHOUSE_HANDLER_STATES.INVALID_SECTION;
 };
 
-const incrementalId = ((i = 0) => () => i++)();
+const incrementalId = (
+  (i = 0) =>
+  () =>
+    i++
+)();
 
 type EventSubscription = {
   id: number;
@@ -133,7 +137,7 @@ export function on<T extends LighthouseEvents>(
     section,
     callback,
     remove: () => {
-      const i = subs.map(i => i.id).indexOf(sub.id);
+      const i = subs.map((i) => i.id).indexOf(sub.id);
       subs.splice(i, 1);
     },
   };
@@ -156,16 +160,16 @@ export function emit<T extends LighthouseEvents>(
   data: LighthouseCallbackDataType<T>
 ) {
   subs
-    .filter(sub => sub.section === section)
-    .filter(sub => sub.event === event)
-    .forEach(sub => sub.callback(data));
+    .filter((sub) => sub.section === section)
+    .filter((sub) => sub.event === event)
+    .forEach((sub) => sub.callback(data));
 }
 
 /**
  * Gets all sections.
  */
 export const getSections = () =>
-  sectionIntances.map(section => section.handler.section);
+  sectionIntances.map((section) => section.handler.section);
 
 /**
  * Run audit in selected section instance.
