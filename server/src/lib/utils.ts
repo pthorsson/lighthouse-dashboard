@@ -28,7 +28,11 @@ export const createLogger = (label: string) => (message: string) =>
 /**
  * A function that always returns an incremented number on each call.
  */
-export const incrementId = ((i = 0) => () => i++)();
+export const incrementId = (
+  (i = 0) =>
+  () =>
+    i++
+)();
 
 /**
  * Wrapper function for encoding a base64 string.
@@ -70,8 +74,8 @@ export const generateString = (minLength = 100, maxLength?: number) => {
  * A function for simulating a delay.
  */
 export const delay = (duration: number) =>
-  new Promise(resolve => {
+  new Promise((resolve) => {
     setTimeout(() => {
-      resolve();
+      resolve(null);
     }, duration);
   });
