@@ -1,11 +1,23 @@
 import { RequestHandler } from 'express';
 import { join } from 'path';
-import { APP_DIST_DIR } from '@config';
+import { APP_DIST_DIR, COMMIT_HASH, BUILD_TIMESTAMP } from '@config';
 import { decodeBase64 } from '@lib/utils';
 import * as lighthouse from '@lib/lighthouse';
 import * as reportCache from '@lib/report-cache';
 import Report from '@models/report.model';
 import { validateSection } from '@middleware';
+
+/**
+ * Get application info
+ */
+export const getApplicationInfo: RequestHandler[] = [
+  (req, res) => {
+    res.json({
+      commitHash: COMMIT_HASH,
+      buildTimestamp: BUILD_TIMESTAMP,
+    });
+  },
+];
 
 /**
  * Get all section slugs
@@ -15,6 +27,7 @@ export const getSections: RequestHandler[] = [
     res.json(lighthouse.getSections());
   },
 ];
+
 /**
  * Serves client side app
  */
