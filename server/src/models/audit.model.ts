@@ -1,4 +1,5 @@
-import { Document, Schema, Error } from 'mongoose';
+import { Document, Schema } from 'mongoose';
+import { RequestError } from '@lib/RequestError';
 import { mongoose } from '@db';
 import * as reportCache from '@lib/report-cache';
 import { setDates, incrementVersion } from '@models/middleware';
@@ -36,24 +37,18 @@ const AuditSchema: Schema = new mongoose.Schema(
 );
 
 // Schema hooks
-AuditSchema.pre('save', async function(next) {
+AuditSchema.pre('save', async function (next) {
   const doc = this as IAudit;
 
   if (doc.isNew && !(await Page.findById(doc.page))) {
-    return next(
-      new Error.ValidatorError({
-        type: 'invalid_section',
-        path: 'section',
-        message: 'Invalid section id',
-      })
-    );
+    return next(new RequestError('invalid_page', 400));
   }
 
   next();
 });
 
 // Limit to 5 audits per page
-AuditSchema.pre('save', async function(next) {
+AuditSchema.pre('save', async function (next) {
   const doc = this as IAudit;
 
   const existingAudits = await doc.collection
@@ -63,7 +58,7 @@ AuditSchema.pre('save', async function(next) {
   const auditsToRemove = existingAudits
     .sort((a, b) => b.timestamp - a.timestamp)
     .slice(4)
-    .map(a => a._id);
+    .map((a) => a._id);
 
   if (auditsToRemove.length) {
     await Audit.deleteMany({ _id: { $in: auditsToRemove } });
@@ -73,7 +68,7 @@ AuditSchema.pre('save', async function(next) {
 });
 
 // Cascade deletion hook
-AuditSchema.pre('deleteMany', async function(next) {
+AuditSchema.pre('deleteMany', async function (next) {
   const query: any = this;
   const audits = await query.find();
 

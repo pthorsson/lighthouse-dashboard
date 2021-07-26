@@ -2,6 +2,7 @@ import { ErrorRequestHandler } from 'express';
 
 export const errorHandler: ErrorRequestHandler = (err, req, res, next) => {
   try {
+    console.log('err', err);
     // Invalid JSON in body-parser
     if (err?.type === 'entity.verify.failed') {
       return res.status(400).json('Invalid json');
@@ -29,6 +30,13 @@ export const errorHandler: ErrorRequestHandler = (err, req, res, next) => {
             ? error.properties.message
             : error.message,
         path: error.path,
+      });
+    }
+
+    // Custom error RequestError
+    if (err.name === 'RequestError') {
+      res.status(err.statusCode).json({
+        message: err.message,
       });
     }
 
