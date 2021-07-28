@@ -8,14 +8,14 @@ const serverConfigFile = path.join(__dirname, '../.build/server/config.js');
 const serverConfigFileContent = fs.readFileSync(serverConfigFile, 'utf8');
 
 const BUILD_TIMESTAMP = new Date().toISOString();
-const DASHBOARD_VERION = packageJson.version;
+const DASHBOARD_VERSION = packageJson.version;
 
 // Append build info to client index file
 fs.appendFileSync(
   clientIndexHtmlFile,
   `
 <!--
-  Dashboard version:  ${DASHBOARD_VERION}
+  Dashboard version:  ${DASHBOARD_VERSION}
   Build timestamp:    ${BUILD_TIMESTAMP}
 -->`
 );
@@ -24,7 +24,7 @@ fs.appendFileSync(
 fs.writeFileSync(
   serverConfigFile,
   serverConfigFileContent
-    .replace('%%dashboard_verion%%', DASHBOARD_VERION)
+    .replace('%%dashboard_version%%', DASHBOARD_VERSION)
     .replace('%%build_timestamp%%', BUILD_TIMESTAMP),
   'utf8'
 );

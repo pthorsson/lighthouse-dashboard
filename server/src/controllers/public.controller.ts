@@ -1,6 +1,6 @@
 import { RequestHandler } from 'express';
 import { join } from 'path';
-import { APP_DIST_DIR, DASHBOARD_VERION, BUILD_TIMESTAMP } from '@config';
+import { APP_DIST_DIR, DASHBOARD_VERSION, BUILD_TIMESTAMP } from '@config';
 import { decodeBase64 } from '@lib/utils';
 import * as lighthouse from '@lib/lighthouse';
 import * as reportCache from '@lib/report-cache';
@@ -13,7 +13,7 @@ import { validateSection } from '@middleware';
 export const getApplicationInfo: RequestHandler[] = [
   (req, res) => {
     res.json({
-      dashboardVerion: DASHBOARD_VERION,
+      dashboardVersion: DASHBOARD_VERSION,
       buildTimestamp: BUILD_TIMESTAMP,
     });
   },

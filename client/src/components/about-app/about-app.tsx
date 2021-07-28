@@ -4,7 +4,7 @@ import { useApi } from '@hooks';
 import Modal, { ModalHeader, ModalSection } from '@ui/modal';
 
 type AppInfoData = {
-  commitHash: string;
+  dashboardVersion: string;
   buildTimestamp: string;
 };
 
@@ -16,8 +16,8 @@ const AboutApp: React.FC = () => {
   return (
     <Modal id="application-info-modal">
       <ModalHeader>Application info</ModalHeader>
-      <ModalSection sectionTitle="Commit hash">
-        <Value>{data?.commitHash}</Value>
+      <ModalSection sectionTitle="Dashboard version">
+        <Value>{data?.dashboardVersion}</Value>
       </ModalSection>
       <ModalSection sectionTitle="Build timestamp">
         <Value>{data?.buildTimestamp}</Value>
