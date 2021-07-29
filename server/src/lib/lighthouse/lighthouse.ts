@@ -52,8 +52,8 @@ export async function syncSections() {
         emit('data-update', section.slug, data);
       });
 
-      handler.on('state-update', (data) => {
-        emit('state-update', section.slug, data);
+      handler.on('section-state-update', (data) => {
+        emit('section-state-update', section.slug, data);
       });
 
       handler.on('audit-complete', (data) => {
@@ -84,7 +84,7 @@ export const syncSectionData = async (sectionSlug: string) => {
 /**
  * Returns current state for section.
  */
-export const getState = (sectionSlug: string) => {
+export const getSectionState = (sectionSlug: string) => {
   const sectionIntance = getSectionInstance(sectionSlug);
 
   if (sectionIntance) {
@@ -97,7 +97,7 @@ export const getState = (sectionSlug: string) => {
 /**
  * Gets fully populated data from selected Lighthouse instance.
  */
-export const getData = (sectionSlug: string) => {
+export const getSectionData = (sectionSlug: string) => {
   const sectionIntance = getSectionInstance(sectionSlug);
 
   if (sectionIntance) {

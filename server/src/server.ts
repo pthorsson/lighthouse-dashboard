@@ -34,14 +34,14 @@ io.on('connection', (socket) => {
   const { section } = socket.handshake.query;
 
   // Recieve section state request and send section state
-  socket.on('request-state-update', (section) => {
-    const state = lighthouse.getState(section);
-    socket.emit('state-update', { state });
+  socket.on('request-section-state-update', (section) => {
+    const state = lighthouse.getSectionState(section);
+    socket.emit('section-state-update', { state });
   });
 
   // Recieve section data request and send section data
   socket.on('request-section-data', (section) => {
-    const data = lighthouse.getData(section);
+    const data = lighthouse.getSectionData(section);
     socket.emit('section-data', { section: data });
   });
 
@@ -51,12 +51,16 @@ io.on('connection', (socket) => {
   });
 
   // Subscribe to lighthouse state updates
-  const stateUpdateSub = lighthouse.on('state-update', section, (data) => {
-    console.log(`==== Lighthouse state updated (${section}) ====`);
-    console.log(JSON.stringify(data.state, null, 2));
+  const stateUpdateSub = lighthouse.on(
+    'section-state-update',
+    section,
+    (data) => {
+      console.log(`==== Lighthouse state updated (${section}) ====`);
+      console.log(JSON.stringify(data.state, null, 2));
 
-    socket.emit('state-update', data);
-  });
+      socket.emit('section-state-update', data);
+    }
+  );
 
   // Subscribe to lighthouse audit completions
   const auditCompleteSub = lighthouse.on('audit-complete', section, (data) => {
