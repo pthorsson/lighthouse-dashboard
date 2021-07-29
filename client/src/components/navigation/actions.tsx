@@ -33,7 +33,3 @@ const Actions: React.FC = () => {
 };
 
 export default Actions;
-
-// Elements
-
-const Wrapper = styled.div``;
