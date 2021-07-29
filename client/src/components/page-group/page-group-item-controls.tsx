@@ -1,13 +1,21 @@
 import React, { useMemo } from 'react';
 import styled, { css } from 'styled-components';
 import { timestampToDate } from '@lib/utils';
-import { useLighthouse, EnsureUserRole, USER_ROLES, useApi } from '@hooks';
+import {
+  useLighthouse,
+  EnsureUserRole,
+  USER_ROLES,
+  useApi,
+  useAppState,
+  SERVER_STATE,
+} from '@hooks';
 import DropMenu, {
   DropDownItem,
   DropDownTitle,
   useDropMenu,
 } from '@ui/drop-menu';
 import Icon from '@ui/icon';
+
 import { Button, LinkButton } from '@ui/buttons';
 
 type Props = {
@@ -18,6 +26,7 @@ type Props = {
 const PageGroupItemControls: React.FC<Props> = ({ id, audits }) => {
   const { isOpen, toggle } = useDropMenu(`report-links_${id}`);
   const { state, section } = useLighthouse();
+  const { serverState } = useAppState();
   const removeQueuedAudit = useApi(
     `/api/actions/remove-queued-audit/${section}/${id}`
   );
@@ -33,6 +42,7 @@ const PageGroupItemControls: React.FC<Props> = ({ id, audits }) => {
               adaptive={true}
               noPadding={true}
               onClick={() => removeQueuedAudit.exec()}
+              disabled={serverState !== SERVER_STATE.OK}
             >
               <Icon type="cross" />
             </Button>
@@ -41,7 +51,7 @@ const PageGroupItemControls: React.FC<Props> = ({ id, audits }) => {
               tooltip="Trigger audit"
               adaptive={true}
               noPadding={true}
-              disabled={state.active === id}
+              disabled={state.active === id || serverState !== SERVER_STATE.OK}
               onClick={() => triggerAudit.exec()}
             >
               <Icon type="play" />
@@ -91,7 +101,7 @@ const PageGroupItemControls: React.FC<Props> = ({ id, audits }) => {
         </DropDownWrapper>
       </>
     ),
-    [isOpen, state]
+    [isOpen, state, serverState]
   );
 };
 
