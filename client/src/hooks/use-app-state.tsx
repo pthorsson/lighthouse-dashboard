@@ -1,41 +1,70 @@
-import React, { useContext } from 'react';
+import React, { useState, useCallback, useContext, useEffect } from 'react';
+import * as socketIo from 'socket.io-client';
+
+// This should be shared between client and server
+export enum SERVER_STATE {
+  OK = 'OK',
+  ERROR = 'ERROR',
+  CALIBRATING = 'CALIBRATING',
+  INITIALIZING = 'INITIALIZING',
+}
 
 type AppState = {
   comparedMode: boolean;
+  serverState: SERVER_STATE;
 };
 
-type ContextState = AppState & {
+type Context = AppState & {
   setState: (state: Partial<AppState>) => void;
 };
 
-const AppStateContext = React.createContext<ContextState>({
+const AppStateContext = React.createContext<Context>({
   comparedMode: false,
-  setState: null,
+  serverState: SERVER_STATE.INITIALIZING,
+  setState: () => {},
 });
 
-export class AppStateProvider extends React.Component {
-  state: AppState = {
+export const AppStateProvider: React.FC = ({ children }) => {
+  const [state, _setState] = useState<AppState>({
     comparedMode: false,
-  };
+    serverState: SERVER_STATE.INITIALIZING,
+  });
 
-  _setState = (data: Partial<AppState>) => {
-    this.setState({ ...data });
-  };
+  const setState = useCallback(
+    (newState: Partial<AppState>) => {
+      _setState({ ...state, ...newState });
+    },
+    [state]
+  );
 
-  render() {
-    const context: ContextState = {
-      comparedMode: this.state.comparedMode,
-      setState: this._setState,
+  useEffect(() => {
+    const io = socketIo(location.origin, {
+      path: '/socket',
+    });
+
+    io.emit('request-server-state-update');
+
+    io.on('server-state-update', (serverState: SERVER_STATE) => {
+      setState({ serverState });
+    });
+
+    return () => {
+      io.disconnect();
     };
+  }, []);
 
-    return (
-      <AppStateContext.Provider value={context}>
-        {this.props.children}
-      </AppStateContext.Provider>
-    );
-  }
-}
+  return (
+    <AppStateContext.Provider
+      value={{
+        ...state,
+        setState,
+      }}
+    >
+      {children}
+    </AppStateContext.Provider>
+  );
+};
 
-type AppStateHook = () => ContextState;
+type AppStateHook = () => Context;
 
 export const useAppState: AppStateHook = () => useContext(AppStateContext);

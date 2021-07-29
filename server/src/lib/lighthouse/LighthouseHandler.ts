@@ -1,5 +1,6 @@
 import { debounce } from 'lodash';
 import { createLogger, createTimer, encodeBase64, delay } from '@lib/utils';
+import * as serverState from '@lib/server-state';
 import { asyncLighthouseCommand } from './lighthouse.utils';
 import fetch from 'node-fetch';
 
@@ -15,10 +16,12 @@ export enum LIGHTHOUSE_HANDLER_STATES {
   ALREADY_ACTIVE = 'ALREADY_ACTIVE',
   INVALID_ID = 'INVALID_ID',
   INVALID_SECTION = 'INVALID_SECTION',
+  SERVER_NOT_READY = 'SERVER_NOT_READY',
+  SERVER_ERROR = 'SERVER_ERROR',
 }
 
 export type LighthouseEvents =
-  | 'state-update'
+  | 'section-state-update'
   | 'data-update'
   | 'audit-complete';
 
@@ -29,7 +32,7 @@ type AuditCompleteCallbackData = {
   deletedAudits: string[];
 };
 
-export type LighthouseCallbackDataType<T> = T extends 'state-update'
+export type LighthouseCallbackDataType<T> = T extends 'section-state-update'
   ? StateUpdateCallbackData
   : T extends 'data-update'
   ? DataUpdateCallbackData
@@ -97,8 +100,8 @@ export default class LighthouseHandler {
     data: LighthouseCallbackDataType<T>
   ) {
     this._subs
-      .filter(sub => sub.event === event)
-      .forEach(sub => sub.callback(data));
+      .filter((sub) => sub.event === event)
+      .forEach((sub) => sub.callback(data));
   }
 
   /**
@@ -125,7 +128,7 @@ export default class LighthouseHandler {
       section: this._section._id,
     }).select('_id name namePrefix nameSuffix section');
 
-    this._pageGroups = pageGroups.map(pg => ({
+    this._pageGroups = pageGroups.map((pg) => ({
       _id: pg._id.toHexString(),
       name: pg.name,
       namePrefix: pg.namePrefix,
@@ -136,10 +139,10 @@ export default class LighthouseHandler {
     // Load pages
 
     const pages = await Page.find({
-      pageGroup: { $in: this._pageGroups.map(p => p._id) },
+      pageGroup: { $in: this._pageGroups.map((p) => p._id) },
     }).select('_id url pageGroup');
 
-    this._pages = pages.map(p => ({
+    this._pages = pages.map((p) => ({
       _id: p._id.toHexString(),
       url: p.url,
       pageGroup: p.pageGroup.toHexString(),
@@ -148,12 +151,12 @@ export default class LighthouseHandler {
     // Load audits
 
     const audits = await Audit.find({
-      page: { $in: this._pages.map(p => p._id) },
+      page: { $in: this._pages.map((p) => p._id) },
     }).select(
       '_id timestamp duration performance accessibility bestPractices seo page'
     );
 
-    this._audits = audits.map(a => ({
+    this._audits = audits.map((a) => ({
       _id: a._id.toHexString(),
       timestamp: a.timestamp,
       duration: a.duration,
@@ -171,25 +174,25 @@ export default class LighthouseHandler {
     const section: Lhd.Section = { ...this._section, pageGroups: [] };
 
     // Populate page groups
-    this._pageGroups.forEach(pg => {
+    this._pageGroups.forEach((pg) => {
       const pageGroup: Lhd.PageGroup = { ...pg, pages: [] };
 
       // Populate pages and sort them after URL
       this._pages
-        .filter(p => p.pageGroup === pageGroup._id)
+        .filter((p) => p.pageGroup === pageGroup._id)
         .sort((a, b) => {
           if (a.url > b.url) return 1;
           if (a.url < b.url) return -1;
           return 0;
         })
-        .forEach(p => {
+        .forEach((p) => {
           const page: Lhd.Page = { ...p, audits: [] };
 
           // Populate audits
           this._audits
-            .filter(a => a.page === page._id)
+            .filter((a) => a.page === page._id)
             .sort((a, b) => b.timestamp - a.timestamp)
-            .forEach(a => {
+            .forEach((a) => {
               page.audits.push({ ...a });
             });
 
@@ -241,7 +244,7 @@ export default class LighthouseHandler {
       ...data,
     };
 
-    this.emit('state-update', { state: this.state });
+    this.emit('section-state-update', { state: this.state });
   }
 
   /**
@@ -254,7 +257,7 @@ export default class LighthouseHandler {
       return LIGHTHOUSE_HANDLER_STATES.ALREADY_ACTIVE;
     }
 
-    if (!this._pages.find(page => page._id === id)) {
+    if (!this._pages.find((page) => page._id === id)) {
       return LIGHTHOUSE_HANDLER_STATES.INVALID_ID;
     }
 
@@ -274,12 +277,14 @@ export default class LighthouseHandler {
     const ids: string[] = [];
 
     // We grab the pages from the get data method to get them sorted.
-    this.data.pageGroups.forEach(pg => {
+    this.data.pageGroups.forEach((pg) => {
       ids.push(
         ...pg.pages
-          .filter(page => !onlyEmpty || (onlyEmpty && !page.audits.length))
-          .filter(page => queue.indexOf(page._id) === -1 && page._id !== active)
-          .map(page => page._id)
+          .filter((page) => !onlyEmpty || (onlyEmpty && !page.audits.length))
+          .filter(
+            (page) => queue.indexOf(page._id) === -1 && page._id !== active
+          )
+          .map((page) => page._id)
       );
     });
 
@@ -294,7 +299,7 @@ export default class LighthouseHandler {
   public removeQueuedAudit(id: string) {
     const { queue } = this.state;
 
-    const clearedQueue = queue.filter(pageId => pageId !== id);
+    const clearedQueue = queue.filter((pageId) => pageId !== id);
 
     if (queue.length && clearedQueue.length === queue.length) return;
 
@@ -323,7 +328,7 @@ export default class LighthouseHandler {
       const id = queue.shift();
 
       this.setState({ active: id, queue });
-      const page = this._pages.find(page => page._id === id);
+      const page = this._pages.find((page) => page._id === id);
 
       // Pre fetch page to create possible cache
       await this.preFetchUrl(page.url);
@@ -335,7 +340,7 @@ export default class LighthouseHandler {
       const result = await this.execLighthouse(page.url);
 
       if (result) {
-        const page = this._pages.find(page => page._id === id);
+        const page = this._pages.find((page) => page._id === id);
 
         const auditDoc = await Audit.create({
           ...result.audit,
@@ -361,13 +366,13 @@ export default class LighthouseHandler {
         this._audits.push(audit);
 
         const deletedAudits = this._audits
-          .filter(a => a.page === page._id)
+          .filter((a) => a.page === page._id)
           .sort((a, b) => b.timestamp - a.timestamp)
           .slice(5)
-          .map(a => a._id);
+          .map((a) => a._id);
 
         this._audits = this._audits.filter(
-          a => deletedAudits.indexOf(a._id) === -1
+          (a) => deletedAudits.indexOf(a._id) === -1
         );
 
         this.emit('audit-complete', { audit, deletedAudits });
@@ -378,7 +383,7 @@ export default class LighthouseHandler {
   }
 
   /**
-   * Pre fetch page in case it
+   * Pre fetch page so that the audit won't be affected by a caching delay
    */
   private async preFetchUrl(url: string) {
     this.log(`Prefetching url: ${url} ...`);
@@ -393,9 +398,15 @@ export default class LighthouseHandler {
     const getTimePassed = createTimer();
     const timestamp = new Date().getTime();
 
+    const { cpuThrottle } = serverState.get();
+
     // Execute lighthouse run
-    this.log(`Running lighthouse on ${url} ...`);
-    const results = await asyncLighthouseCommand(url);
+    this.log(
+      `Running lighthouse on ${url} with cpuThrottle set to ${cpuThrottle.toFixed(
+        1
+      )} ...`
+    );
+    const results = await asyncLighthouseCommand(url, cpuThrottle);
     const duration = getTimePassed();
 
     if (!results) {

@@ -85,10 +85,13 @@ export class LighthouseProvider extends React.Component<Props> {
     };
 
     // Listener for state updates
-    this.io.on('state-update', (res: SocketResponse<StateUpdateRes>) => {
-      this.previousState = { ...this.state };
-      this.setState({ ...res.state });
-    });
+    this.io.on(
+      'section-state-update',
+      (res: SocketResponse<StateUpdateRes>) => {
+        this.previousState = { ...this.state };
+        this.setState({ ...res.state });
+      }
+    );
 
     type AuditCompleteRes = {
       audit: Lhd.Audit;
@@ -97,12 +100,12 @@ export class LighthouseProvider extends React.Component<Props> {
 
     // Listener for audit completions
     this.io.on('audit-complete', (res: SocketResponse<AuditCompleteRes>) => {
-      this.data.pageGroups.forEach(pageGroup => {
-        pageGroup.pages.forEach(page => {
+      this.data.pageGroups.forEach((pageGroup) => {
+        pageGroup.pages.forEach((page) => {
           if (page._id === res.audit.page) {
             page.audits.unshift({ ...res.audit });
             page.audits = page.audits.filter(
-              audit => res.deletedAudits.indexOf(audit._id) === -1
+              (audit) => res.deletedAudits.indexOf(audit._id) === -1
             );
           }
         });

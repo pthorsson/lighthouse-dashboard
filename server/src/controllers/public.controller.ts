@@ -36,7 +36,7 @@ export const getSectionData: RequestHandler[] = [
   (req, res) => {
     const { section } = req.params;
 
-    const sectionData = lighthouse.getData(section);
+    const sectionData = lighthouse.getSectionData(section);
 
     res.json(sectionData);
   },

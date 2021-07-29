@@ -5,10 +5,11 @@ export {
   runAllAudits,
   removeQueuedAudit,
   removeAllQueuedAudits,
-  getData,
-  getState,
+  getSectionData,
+  getSectionState,
   getSections,
   syncSections,
   syncSectionData,
+  calibrate,
 } from './lighthouse';
 export { LIGHTHOUSE_HANDLER_STATES } from './LighthouseHandler';

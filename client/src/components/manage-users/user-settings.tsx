@@ -38,7 +38,7 @@ const UserSettings: React.FC<Props> = ({ user, onChange }) => {
         <TextInput
           type="text"
           placeholder="Email"
-          onChange={e => setForm({ email: e.target.value })}
+          onChange={(e) => setForm({ email: e.target.value })}
           value={form.email}
           disabled={updateUser.state === API_STATE.FETCHING}
         />
@@ -46,7 +46,7 @@ const UserSettings: React.FC<Props> = ({ user, onChange }) => {
       <FormSection>
         <InputLabel>Role</InputLabel>
         <RoleSelect
-          onChange={e => setForm({ role: e.target.value as any })}
+          onChange={(e) => setForm({ role: e.target.value as any })}
           defaultValue={user.role}
           disabled={updateUser.state === API_STATE.FETCHING}
         >
@@ -82,7 +82,3 @@ export default UserSettings;
 const RoleSelect = styled.select``;
 
 const RoleSelectOption = styled.option``;
-
-const RoleDescription = styled.div`
-  margin-top: 20px;
-`;

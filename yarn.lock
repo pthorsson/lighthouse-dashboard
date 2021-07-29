@@ -1385,6 +1385,7 @@ __metadata:
     passport-jwt: 4.0.0
     socket.io: 2.4.1
     typescript: "*"
+    uuid: 8.3.2
   languageName: unknown
   linkType: soft
 
@@ -10018,6 +10019,15 @@ fsevents@~2.3.2:
   bin:
     uuid: ./bin/uuid
   checksum: f407d974ca30b20bfbd32ae9cc05d20e18df5fd9e5fa088d91db04a6597125dcc8d09eeeb7237782724daba36418e24f557e0245e6ce7b8e4ad25d6436f1cde1
+  languageName: node
+  linkType: hard
+
+"uuid@npm:8.3.2":
+  version: 8.3.2
+  resolution: "uuid@npm:8.3.2"
+  bin:
+    uuid: dist/bin/uuid
+  checksum: aed2bcef341f95635f308fea8831fb9038b18c485fe7e71feb89d2e05602dfecad0cb6f2246fae096d4da425cca6e8a71056f28abd97ad98cf770a2018853248
   languageName: node
   linkType: hard
 
