@@ -10,13 +10,14 @@ export const triggerAudit: RequestHandler[] = [
   (req, res) => {
     const { section, id } = req.params;
 
-    const {
-      ALREADY_ACTIVE,
-      INVALID_ID,
-      OK,
-    } = lighthouse.LIGHTHOUSE_HANDLER_STATES;
+    const { SERVER_ERROR, SERVER_NOT_READY, ALREADY_ACTIVE, INVALID_ID, OK } =
+      lighthouse.LIGHTHOUSE_HANDLER_STATES;
 
     const messages: any = {
+      [SERVER_ERROR]:
+        'Server is in a state of error - cannot run audits until this is resolved',
+      [SERVER_NOT_READY]:
+        'Server is initializing - try again in a couple of minutes',
       [ALREADY_ACTIVE]: 'Already active or in queue',
       [INVALID_ID]: 'Invalid id',
       [OK]: 'Added url to audit queue',
@@ -38,9 +39,24 @@ export const triggerAllAudits: RequestHandler[] = [
   (req, res) => {
     const { section } = req.params;
 
-    lighthouse.runAllAudits(section);
+    const { SERVER_ERROR, SERVER_NOT_READY, OK } =
+      lighthouse.LIGHTHOUSE_HANDLER_STATES;
 
-    res.json({ status: 'OK', message: 'Added all pages to audit queue' });
+    const messages: any = {
+      [SERVER_ERROR]:
+        'Server is in a state of error - cannot run audits until this is resolved',
+      [SERVER_NOT_READY]:
+        'Server is initializing - try again in a couple of minutes',
+      [OK]: 'Added all pages to audit queue',
+    };
+
+    const status = lighthouse.runAllAudits(section);
+
+    // res.json({ status: 'OK', message: 'Added all pages to audit queue' });
+
+    res
+      .status(status === lighthouse.LIGHTHOUSE_HANDLER_STATES.OK ? 200 : 400)
+      .json({ status, message: messages[status] });
   },
 ];
 
@@ -52,11 +68,8 @@ export const removeQueuedAudit: RequestHandler[] = [
   (req, res) => {
     const { section, id } = req.params;
 
-    const {
-      ALREADY_ACTIVE,
-      INVALID_ID,
-      OK,
-    } = lighthouse.LIGHTHOUSE_HANDLER_STATES;
+    const { ALREADY_ACTIVE, INVALID_ID, OK } =
+      lighthouse.LIGHTHOUSE_HANDLER_STATES;
 
     const messages: any = {
       [ALREADY_ACTIVE]: 'Already active or in queue',

@@ -99,11 +99,11 @@ export const asyncLighthouseCommand = (
     log('STARTING');
 
     lh.stdout.on('data', (data) => {
-      log(`stdout: ${data}`);
+      log(`stdout: ${data.toString().trim()}`);
     });
 
     lh.stderr.on('data', (data) => {
-      log(`stderr: ${data}`);
+      log(`stderr: ${data.toString().trim()}`);
     });
 
     lh.on('close', () => {

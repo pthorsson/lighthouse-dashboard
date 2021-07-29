@@ -1,6 +1,6 @@
 import { debounce } from 'lodash';
 import { createLogger, createTimer, encodeBase64, delay } from '@lib/utils';
-import * as applicationState from '@lib/application-state';
+import * as serverState from '@lib/server-state';
 import { asyncLighthouseCommand } from './lighthouse.utils';
 import fetch from 'node-fetch';
 
@@ -16,6 +16,8 @@ export enum LIGHTHOUSE_HANDLER_STATES {
   ALREADY_ACTIVE = 'ALREADY_ACTIVE',
   INVALID_ID = 'INVALID_ID',
   INVALID_SECTION = 'INVALID_SECTION',
+  SERVER_NOT_READY = 'SERVER_NOT_READY',
+  SERVER_ERROR = 'SERVER_ERROR',
 }
 
 export type LighthouseEvents =
@@ -381,7 +383,7 @@ export default class LighthouseHandler {
   }
 
   /**
-   * Pre fetch page in case it
+   * Pre fetch page so that the audit won't be affected by a caching delay
    */
   private async preFetchUrl(url: string) {
     this.log(`Prefetching url: ${url} ...`);
@@ -396,7 +398,7 @@ export default class LighthouseHandler {
     const getTimePassed = createTimer();
     const timestamp = new Date().getTime();
 
-    const { cpuThrottle } = applicationState.get();
+    const { cpuThrottle } = serverState.get();
 
     // Execute lighthouse run
     this.log(

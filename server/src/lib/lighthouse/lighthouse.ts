@@ -1,4 +1,4 @@
-import * as applicationState from '@lib/application-state';
+import * as serverState from '@lib/server-state';
 import {
   calculateCpuThrottling,
   asyncLighthouseCommand,
@@ -186,30 +186,56 @@ export const getSections = () =>
  * Run audit in selected section instance.
  */
 export const runAudit = (sectionSlug: string, id: string) => {
-  const sectionIntance = getSectionInstance(sectionSlug);
+  const { state } = serverState.get();
 
-  if (sectionIntance) {
-    const status = sectionIntance.handler.runAudit(id);
-
-    return status;
+  if (state === serverState.SERVER_STATE.ERROR) {
+    return LIGHTHOUSE_HANDLER_STATES.SERVER_ERROR;
   }
 
-  return LIGHTHOUSE_HANDLER_STATES.INVALID_SECTION;
+  if (
+    state === serverState.SERVER_STATE.CALIBRATING ||
+    state === serverState.SERVER_STATE.INITIALIZING
+  ) {
+    return LIGHTHOUSE_HANDLER_STATES.SERVER_NOT_READY;
+  }
+
+  const sectionIntance = getSectionInstance(sectionSlug);
+
+  if (!sectionIntance) {
+    return LIGHTHOUSE_HANDLER_STATES.INVALID_SECTION;
+  }
+
+  const status = sectionIntance.handler.runAudit(id);
+
+  return status;
 };
 
 /**
  * Run all audits in selected section instance.
  */
 export const runAllAudits = (sectionSlug: string, onlyEmpty = false) => {
-  const sectionIntance = getSectionInstance(sectionSlug);
+  const { state } = serverState.get();
 
-  if (sectionIntance) {
-    sectionIntance.handler.runAllAudits(onlyEmpty);
-
-    return LIGHTHOUSE_HANDLER_STATES.OK;
+  if (state === serverState.SERVER_STATE.ERROR) {
+    return LIGHTHOUSE_HANDLER_STATES.SERVER_ERROR;
   }
 
-  return LIGHTHOUSE_HANDLER_STATES.INVALID_SECTION;
+  if (
+    state === serverState.SERVER_STATE.CALIBRATING ||
+    state === serverState.SERVER_STATE.INITIALIZING
+  ) {
+    return LIGHTHOUSE_HANDLER_STATES.SERVER_NOT_READY;
+  }
+
+  const sectionIntance = getSectionInstance(sectionSlug);
+
+  if (!sectionIntance) {
+    return LIGHTHOUSE_HANDLER_STATES.INVALID_SECTION;
+  }
+
+  sectionIntance.handler.runAllAudits(onlyEmpty);
+
+  return LIGHTHOUSE_HANDLER_STATES.OK;
 };
 
 /**
@@ -261,7 +287,7 @@ export const calibrate = (callback: CalibrationCallback) => {
 
   const calibrationUrl = 'https://www.google.com/';
 
-  applicationState.set({ state: applicationState.APP_STATE.CALIBRATING });
+  serverState.set({ state: serverState.SERVER_STATE.CALIBRATING });
 
   asyncLighthouseCommand(calibrationUrl).then(({ jsonReportContent }) => {
     let cpuThrottle = 1;
@@ -292,10 +318,5 @@ export const calibrate = (callback: CalibrationCallback) => {
         error
       );
     }
-
-    applicationState.set({
-      state: applicationState.APP_STATE.OK,
-      cpuThrottle,
-    });
   });
 };

@@ -9,7 +9,7 @@ import devHotReload from './dev-hot-reload';
 import * as lighthouse from '@lib/lighthouse';
 import { mongoose } from '@db';
 import { ensureUserRole, setCurrentUser, USER_ROLES } from '@middleware';
-import * as applicationState from '@lib/application-state';
+import * as serverState from '@lib/server-state';
 
 import * as userController from '@controllers/admin/user.controller';
 import * as sectionController from '@controllers/admin/section.controller';
@@ -32,9 +32,9 @@ mongoose.connect(process.env.MONGO_CONNECTION_STR, {
 
 if (process.env.NODE_ENV !== 'development') {
   // Set default CPU throttle if in development mode
-  applicationState.set({
+  serverState.set({
     cpuThrottle: 4,
-    state: applicationState.APP_STATE.OK,
+    state: serverState.SERVER_STATE.OK,
   });
 } else {
   // Preform a calibration of Lighthouse on start-up
@@ -42,16 +42,16 @@ if (process.env.NODE_ENV !== 'development') {
 
   lighthouse.calibrate(({ cpuThrottle, benchmarkIndex }, error) => {
     if (!cpuThrottle || error) {
-      applicationState.set({
-        state: applicationState.APP_STATE.ERROR,
+      serverState.set({
+        state: serverState.SERVER_STATE.ERROR,
       });
 
       console.log('Calibrating Lighthouse ERROR');
       console.error(error);
     } else {
-      applicationState.set({
+      serverState.set({
         cpuThrottle,
-        state: applicationState.APP_STATE.OK,
+        state: serverState.SERVER_STATE.ERROR,
       });
 
       console.log(
@@ -67,9 +67,9 @@ if (process.env.NODE_ENV !== 'development') {
 io.on('connection', (socket) => {
   const { section } = socket.handshake.query;
 
-  socket.on('request-application-state-update', () => {
-    const state = applicationState.get();
-    socket.emit('application-state-update', state);
+  socket.on('request-server-state-update', () => {
+    const { state } = serverState.get();
+    socket.emit('server-state-update', state);
   });
 
   // Recieve section state request and send section state
@@ -84,8 +84,8 @@ io.on('connection', (socket) => {
     socket.emit('section-data', { section: data });
   });
 
-  const applicationStateSub = applicationState.subscribe((state) => {
-    socket.emit('application-state-update', state);
+  const serverStateSub = serverState.subscribe(({ state }) => {
+    socket.emit('server-state-update', state);
   });
 
   // Subscribe to lighthouse data updates
@@ -112,7 +112,7 @@ io.on('connection', (socket) => {
 
   // Remove subscriptions for socket on disconnect
   socket.on('disconnect', () => {
-    applicationStateSub.remove();
+    serverStateSub.remove();
     dataUpdateSub.remove();
     stateUpdateSub.remove();
     auditCompleteSub.remove();

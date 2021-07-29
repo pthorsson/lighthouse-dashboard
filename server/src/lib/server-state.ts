@@ -1,19 +1,19 @@
 import { v1 as uuid } from 'uuid';
 
-export enum APP_STATE {
+export enum SERVER_STATE {
   OK = 'OK',
   ERROR = 'ERROR',
   CALIBRATING = 'CALIBRATING',
   INITIALIZING = 'INITIALIZING',
 }
 
-type ApplicationState = {
-  state: APP_STATE;
+export type ServerState = {
+  state: SERVER_STATE;
   cpuThrottle: number;
 };
 
-const initialState: ApplicationState = {
-  state: APP_STATE.INITIALIZING,
+const initialState: ServerState = {
+  state: SERVER_STATE.INITIALIZING,
   cpuThrottle: 1,
 };
 
@@ -22,10 +22,7 @@ const _state = {
   previous: { ...initialState },
 };
 
-type SubscriptionCallback = (
-  state: ApplicationState,
-  previous: ApplicationState
-) => void;
+type SubscriptionCallback = (state: ServerState, previous: ServerState) => void;
 
 type Subscription = {
   id: string;
@@ -35,11 +32,11 @@ type Subscription = {
 
 const subscriptions: Subscription[] = [];
 
-export const get = (): ApplicationState => {
+export const get = (): ServerState => {
   return { ..._state.current };
 };
 
-export const set = (state: Partial<ApplicationState>): ApplicationState => {
+export const set = (state: Partial<ServerState>): ServerState => {
   _state.previous = { ..._state.current };
   _state.current = { ..._state.current, ...state };
 
