@@ -30,8 +30,10 @@ mongoose.connect(process.env.MONGO_CONNECTION_STR, {
   useUnifiedTopology: true,
 });
 
-if (process.env.NODE_ENV !== 'development') {
+if (process.env.NODE_ENV === 'development') {
   // Set default CPU throttle if in development mode
+  console.log('Set default CPU throttle 4 in development mode');
+
   serverState.set({
     cpuThrottle: 4,
     state: serverState.SERVER_STATE.OK,
