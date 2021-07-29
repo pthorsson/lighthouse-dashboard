@@ -51,7 +51,7 @@ if (process.env.NODE_ENV !== 'development') {
     } else {
       serverState.set({
         cpuThrottle,
-        state: serverState.SERVER_STATE.ERROR,
+        state: serverState.SERVER_STATE.OK,
       });
 
       console.log(
