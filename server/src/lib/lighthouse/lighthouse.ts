@@ -1,3 +1,8 @@
+import * as applicationState from '@lib/application-state';
+import {
+  calculateCpuThrottling,
+  asyncLighthouseCommand,
+} from './lighthouse.utils';
 import LighthouseHandler, {
   LIGHTHOUSE_HANDLER_STATES,
   LighthouseEvents,
@@ -69,6 +74,12 @@ export async function syncSections() {
     }
   }
 }
+
+/**
+ * Helper function for getting section instance.
+ */
+const getSectionInstance = (slug: string) =>
+  sectionIntances.find(({ sectionSlug }) => sectionSlug === slug);
 
 /**
  * Triggers a section data sync with the database.
@@ -232,7 +243,59 @@ export const removeAllQueuedAudits = (sectionSlug: string) => {
 };
 
 /**
- * Helper function for getting section instance.
+ * This function will run a lighthouse audit and return the benchmarkIndex and
+ * cpuThrottle, so that we can set an appropriate cpuThrottle for the
+ * environment the application is running in.
  */
-const getSectionInstance = (slug: string) =>
-  sectionIntances.find(({ sectionSlug }) => sectionSlug === slug);
+
+type CalibrationCallback = (
+  data: {
+    cpuThrottle: number | null;
+    benchmarkIndex: number | null;
+  },
+  error?: any
+) => void;
+
+export const calibrate = (callback: CalibrationCallback) => {
+  console.log('Calibrating Lighthouse ...');
+
+  const calibrationUrl = 'https://www.google.com/';
+
+  applicationState.set({ state: applicationState.APP_STATE.CALIBRATING });
+
+  asyncLighthouseCommand(calibrationUrl).then(({ jsonReportContent }) => {
+    let cpuThrottle = 1;
+
+    try {
+      const jsonData = JSON.parse(jsonReportContent);
+      const benchmarkIndex = jsonData?.environment?.benchmarkIndex;
+
+      if (!benchmarkIndex) {
+        throw Error('Invalid benchmarkIndex - Lighthouse calibration failed?');
+      }
+
+      cpuThrottle = calculateCpuThrottling(benchmarkIndex);
+
+      callback(
+        {
+          cpuThrottle,
+          benchmarkIndex,
+        },
+        null
+      );
+    } catch (error) {
+      callback(
+        {
+          cpuThrottle: null,
+          benchmarkIndex: null,
+        },
+        error
+      );
+    }
+
+    applicationState.set({
+      state: applicationState.APP_STATE.OK,
+      cpuThrottle,
+    });
+  });
+};

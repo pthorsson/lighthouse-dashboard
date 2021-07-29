@@ -1,5 +1,6 @@
 import { debounce } from 'lodash';
 import { createLogger, createTimer, encodeBase64, delay } from '@lib/utils';
+import * as applicationState from '@lib/application-state';
 import { asyncLighthouseCommand } from './lighthouse.utils';
 import fetch from 'node-fetch';
 
@@ -395,9 +396,15 @@ export default class LighthouseHandler {
     const getTimePassed = createTimer();
     const timestamp = new Date().getTime();
 
+    const { cpuThrottle } = applicationState.get();
+
     // Execute lighthouse run
-    this.log(`Running lighthouse on ${url} ...`);
-    const results = await asyncLighthouseCommand(url);
+    this.log(
+      `Running lighthouse on ${url} with cpuThrottle set to ${cpuThrottle.toFixed(
+        1
+      )} ...`
+    );
+    const results = await asyncLighthouseCommand(url, cpuThrottle);
     const duration = getTimePassed();
 
     if (!results) {

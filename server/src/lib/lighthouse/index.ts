@@ -10,5 +10,6 @@ export {
   getSections,
   syncSections,
   syncSectionData,
+  calibrate,
 } from './lighthouse';
 export { LIGHTHOUSE_HANDLER_STATES } from './LighthouseHandler';
