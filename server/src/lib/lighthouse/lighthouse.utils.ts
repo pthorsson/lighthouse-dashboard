@@ -1,5 +1,6 @@
 import { spawn } from 'child_process';
 import { join } from 'path';
+import * as filesize from 'filesize';
 import {
   readFileSync,
   existsSync,
@@ -180,6 +181,16 @@ export const asyncLighthouseCommand = ({
           bestPractices: data.categories['best-practices'].score,
           seo: data.categories.seo.score,
         };
+
+        const jsonBytes = Buffer.byteLength(jsonReportContent, 'utf8');
+        const htmlBytes = Buffer.byteLength(htmlReportContent, 'utf8');
+
+        log([
+          '----',
+          `${logPrefix()} score ${JSON.stringify(score, null, 2)}`,
+          `${logPrefix()} JSON report size ${filesize(jsonBytes)}`,
+          `${logPrefix()} HTML report size ${filesize(htmlBytes)}`,
+        ]);
 
         log([
           '----',

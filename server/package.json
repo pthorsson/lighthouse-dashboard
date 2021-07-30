@@ -24,6 +24,7 @@
     "body-parser": "1.19.0",
     "dotenv": "*",
     "express": "4.17.1",
+    "filesize": "^7.0.0",
     "jsonwebtoken": "8.5.1",
     "lighthouse": "8.1.0",
     "lodash": "4.17.21",

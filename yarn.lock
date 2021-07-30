@@ -1372,6 +1372,7 @@ __metadata:
     body-parser: 1.19.0
     dotenv: "*"
     express: 4.17.1
+    filesize: ^7.0.0
     jsonwebtoken: 8.5.1
     lighthouse: 8.1.0
     lodash: 4.17.21
@@ -4579,6 +4580,13 @@ __metadata:
   version: 1.0.0
   resolution: "file-uri-to-path@npm:1.0.0"
   checksum: 5ddb9682f04f6f87b7765b93306206db2f96bc86162487e27639c55fe3ffeed12c30906ef1dedaa5307d7cabbbbdcbfa299b79aaec435de0f17e17ab31bd20b3
+  languageName: node
+  linkType: hard
+
+"filesize@npm:^7.0.0":
+  version: 7.0.0
+  resolution: "filesize@npm:7.0.0"
+  checksum: ada28792beca6fee3c26708e7e1bad9fa3b8553a0001de39278ba78d55e8ce963db2d3413a1d83efcf07ba446664b2865d8b4d4715eeb004b28d0dec8375cfb8
   languageName: node
   linkType: hard
 
