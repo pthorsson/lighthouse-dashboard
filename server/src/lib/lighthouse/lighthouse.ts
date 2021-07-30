@@ -285,8 +285,6 @@ type CalibrationCallback = (
 ) => void;
 
 export const calibrate = (callback: CalibrationCallback) => {
-  console.log('Calibrating Lighthouse ...');
-
   const url = 'https://www.google.com/';
 
   serverState.set({ state: serverState.SERVER_STATE.CALIBRATING });

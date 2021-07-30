@@ -66,7 +66,7 @@ export class LighthouseProvider extends React.Component<Props> {
 
     // Request initial section data
     this.io.emit('request-section-data', this.section);
-    this.io.emit('request-state-update', this.section);
+    this.io.emit('request-section-state-update', this.section);
 
     type SectionDataRes = {
       section: Lhd.Section;
