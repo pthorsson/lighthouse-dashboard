@@ -4,7 +4,7 @@ import { LighthouseProvider, useApi, API_STATE } from '@hooks';
 import ErrorScreen from '@components/error-screen';
 
 const SectionVerifier: React.FC = ({ children }) => {
-  const { section } = useParams() as any;
+  const { section } = useParams<{ section: string }>();
   const { data, state } = useApi<Lhd.Section[]>('/api/sections', {
     runOnMount: true,
   });
