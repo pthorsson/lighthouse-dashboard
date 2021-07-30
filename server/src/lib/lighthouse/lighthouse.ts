@@ -1,3 +1,5 @@
+import { join } from 'path';
+import { TMP_DIR } from '@config';
 import * as serverState from '@lib/server-state';
 import {
   calculateCpuThrottling,
@@ -285,11 +287,14 @@ type CalibrationCallback = (
 export const calibrate = (callback: CalibrationCallback) => {
   console.log('Calibrating Lighthouse ...');
 
-  const calibrationUrl = 'https://www.google.com/';
+  const url = 'https://www.google.com/';
 
   serverState.set({ state: serverState.SERVER_STATE.CALIBRATING });
 
-  asyncLighthouseCommand(calibrationUrl).then(({ jsonReportContent }) => {
+  asyncLighthouseCommand({
+    url,
+    logFile: join(TMP_DIR, 'latest-calibration-run.log'),
+  }).then(({ jsonReportContent }) => {
     let cpuThrottle = 1;
 
     try {

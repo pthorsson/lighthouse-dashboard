@@ -83,6 +83,11 @@ const Navigation: React.FC<Props> = ({ section }) => {
                   Settings
                 </DropDownItem>
               </EnsureUserRole>
+              <EnsureUserRole role={USER_ROLES.SUPERADMIN} requireLoggedInUser>
+                <DropDownItem type="route" to={`/log/section/${section}`}>
+                  Latest audit log
+                </DropDownItem>
+              </EnsureUserRole>
             </>
           )}
           {section && (
@@ -107,7 +112,7 @@ const Navigation: React.FC<Props> = ({ section }) => {
               </DropDownItem>
             </EnsureUserRole>
           </EnsureUserRole>
-          <EnsureUserRole role={USER_ROLES.ADMIN} requireLoggedInUser>
+          <EnsureUserRole role={USER_ROLES.SUPERADMIN} requireLoggedInUser>
             <DropDownDivider />
             <DropDownTitle>Application</DropDownTitle>
             <DropDownItem
@@ -115,6 +120,9 @@ const Navigation: React.FC<Props> = ({ section }) => {
               onClick={() => applicationInfoModal.toggle(true)}
             >
               Info
+            </DropDownItem>
+            <DropDownItem type="route" to={'/log/calibration'}>
+              Calibration audit log
             </DropDownItem>
           </EnsureUserRole>
         </DropMenu>
@@ -130,7 +138,7 @@ const Navigation: React.FC<Props> = ({ section }) => {
       <EnsureUserRole role={USER_ROLES.SUPERADMIN} requireLoggedInUser>
         <ManageUsers />
       </EnsureUserRole>
-      <EnsureUserRole role={USER_ROLES.ADMIN} requireLoggedInUser>
+      <EnsureUserRole role={USER_ROLES.SUPERADMIN} requireLoggedInUser>
         <AboutApp />
       </EnsureUserRole>
     </>
