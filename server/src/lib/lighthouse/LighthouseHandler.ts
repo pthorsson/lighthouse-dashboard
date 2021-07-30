@@ -1,6 +1,8 @@
+import { join } from 'path';
 import { debounce } from 'lodash';
 import { createLogger, createTimer, encodeBase64, delay } from '@lib/utils';
 import * as serverState from '@lib/server-state';
+import { TMP_DIR } from '@config';
 import { asyncLighthouseCommand } from './lighthouse.utils';
 import fetch from 'node-fetch';
 
@@ -406,7 +408,16 @@ export default class LighthouseHandler {
         1
       )} ...`
     );
-    const results = await asyncLighthouseCommand(url, cpuThrottle);
+
+    const results = await asyncLighthouseCommand({
+      url,
+      cpuThrottle,
+      logFile: join(TMP_DIR, `latest-run_${this.section.slug}.log`),
+      onLogEvent: (lines, logToConsole = true) => {
+        logToConsole && lines.forEach(this.log);
+      },
+    });
+
     const duration = getTimePassed();
 
     if (!results) {

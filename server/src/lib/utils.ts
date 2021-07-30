@@ -1,4 +1,4 @@
-import { VERBOSE } from '@config';
+import * as stripAnsi from 'strip-ansi';
 
 /**
  * Simple deep copy function.
@@ -23,7 +23,7 @@ export const createTimer = () => {
  * Wrapper for console.log that adds a given prefix.
  */
 export const createLogger = (label: string) => (message: string) =>
-  VERBOSE && console.log(`[${label}] ${message}`);
+  console.log(`[${label}] ${message}`);
 
 /**
  * A function that always returns an incremented number on each call.
@@ -79,3 +79,15 @@ export const delay = (duration: number) =>
       resolve(null);
     }, duration);
   });
+
+/**
+ * Parse an unknown variable to a string and splitting it at line break. Mainly
+ * used for parsing stdout buffers.
+ */
+export const parseToLines = (data: unknown): string[] =>
+  data
+    .toString()
+    .split(/\r?\n/)
+    .map((line) => line.trim())
+    .filter(Boolean)
+    .map(stripAnsi as any);

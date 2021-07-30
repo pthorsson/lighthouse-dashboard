@@ -12,6 +12,7 @@ import { ensureUserRole, setCurrentUser, USER_ROLES } from '@middleware';
 import * as serverState from '@lib/server-state';
 
 import * as userController from '@controllers/admin/user.controller';
+import * as infoController from '@controllers/admin/info.controller';
 import * as sectionController from '@controllers/admin/section.controller';
 import * as pageGroupController from '@controllers/admin/page-group.controller';
 import * as pageController from '@controllers/admin/page.controller';
@@ -137,13 +138,21 @@ app.use('/static', express.static(APP_STATIC_DIR));
 // ---- Admin API endpoints
 
 // Ensure SUPERADMIN role for all admin user endpoints
-app.use('/api/admin/user', ensureUserRole(USER_ROLES.SUPERADMIN));
+app.use(
+  ['/api/admin/user', '/api/admin/info'],
+  ensureUserRole(USER_ROLES.SUPERADMIN)
+);
 
 // User handling endpoints
 app.get('/api/admin/user', userController.getAll);
 app.post('/api/admin/user', userController.create);
 app.put('/api/admin/user/:id', userController.update);
 app.delete('/api/admin/user/:id', userController.remove);
+
+// Application info endpoints
+app.get('/api/admin/info/application', infoController.getApplicationInfo);
+app.get('/api/admin/info/calibration-log', infoController.getCalibrationLog);
+app.get('/api/admin/info/section-log/:section', infoController.getSectionLog);
 
 // Ensure ADMIN role for the rest of the admin endpoints
 app.use(
@@ -225,9 +234,6 @@ app.get('/api/get-current-user', [
   setCurrentUser(),
   ...publicController.getCurrentUser,
 ]);
-
-// Serves application info data
-app.get('/api/application-info', publicController.getApplicationInfo);
 
 // ---- Other
 

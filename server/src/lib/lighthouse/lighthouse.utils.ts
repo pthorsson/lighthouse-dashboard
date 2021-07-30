@@ -6,9 +6,12 @@ import {
   mkdirSync,
   unlinkSync,
   readdirSync,
+  writeFileSync,
+  createWriteStream,
+  WriteStream,
 } from 'fs';
-import { createLogger } from '@lib/utils';
-import { TMP_DIR, ROOT_DIR } from '@config';
+import { TMP_DIR, ROOT_DIR, VERBOSE_LIGHTHOUSE_LOGGING } from '@config';
+import { createTimer, parseToLines } from '@lib/utils';
 
 /**
  * CPU Throttle value calculation
@@ -67,17 +70,50 @@ type LighthouseOutput = {
   jsonReportContent: string;
 };
 
-const log = createLogger('lighthouse-process');
+type LighthouseCommandConfig = {
+  url: string;
+  cpuThrottle?: number;
+  onLogEvent?: (line: string[], logToConsole?: boolean) => void;
+  logFile?: string;
+};
 
-export const asyncLighthouseCommand = (
-  url: string,
-  cpuThrottle = 1
-): Promise<LighthouseOutput | null> =>
+export const asyncLighthouseCommand = ({
+  url,
+  cpuThrottle = 1,
+  onLogEvent: emitLog = () => {},
+  logFile,
+}: LighthouseCommandConfig): Promise<LighthouseOutput | null> =>
   new Promise((resolve) => {
     // Ensure tmp dir
     if (!existsSync(TMP_DIR)) {
       mkdirSync(TMP_DIR);
     }
+
+    let logFileStream: WriteStream;
+
+    if (logFile) {
+      // Ensure empty logfile on start
+      writeFileSync(logFile, '');
+
+      logFileStream = createWriteStream(logFile, { flags: 'a' });
+    }
+
+    // Wrapper function for logging and emitting output
+    const log = (lines: string[], verbose = true) => {
+      emitLog(lines, verbose);
+      logFileStream && logFileStream.write(`${lines.join('\n')}\n`);
+    };
+
+    const logPrefix = () => `${new Date().toUTCString()} Info:`;
+
+    // Set timer
+    const getTimePassed = createTimer();
+
+    log([
+      `${logPrefix()} Starting audit on ${url}`,
+      `${logPrefix()} CPU throttle set to ${cpuThrottle.toFixed(1)}`,
+    ]);
+    log(['----'], VERBOSE_LIGHTHOUSE_LOGGING);
 
     // Temporary report file name
     const tempFileName = join(TMP_DIR, `temp-report_${new Date().getTime()}`);
@@ -96,20 +132,25 @@ export const asyncLighthouseCommand = (
       `--throttling.cpuSlowdownMultiplier=${cpuThrottle.toFixed(1)}`,
     ]);
 
-    log('STARTING');
-
-    lh.stdout.on('data', (data) => {
-      log(`stdout: ${data.toString().trim()}`);
+    lh.stdout.on('data', (data: Buffer) => {
+      const lines = parseToLines(data);
+      log(lines, VERBOSE_LIGHTHOUSE_LOGGING);
     });
 
-    lh.stderr.on('data', (data) => {
-      log(`stderr: ${data.toString().trim()}`);
+    lh.stderr.on('data', (data: Buffer) => {
+      const lines = parseToLines(data);
+      log(lines, VERBOSE_LIGHTHOUSE_LOGGING);
     });
 
     lh.on('close', () => {
-      log('FINISHED');
+      log(['----'], VERBOSE_LIGHTHOUSE_LOGGING);
+      log([`${logPrefix()} Lighthouse run completed!`]);
 
       try {
+        log([
+          `${logPrefix()} Loading generated HTML and JSON report files ...`,
+        ]);
+
         // Read temporary report files
         const jsonReportContent = readFileSync(
           `${tempFileName}.report.json`,
@@ -120,12 +161,16 @@ export const asyncLighthouseCommand = (
           'utf8'
         );
 
+        log([`${logPrefix()} Cleaning up temporary files ...`]);
+
         // Delete temporary report files
         readdirSync(TMP_DIR).forEach((fileName) => {
           if (/\.report\.(json|html)$/.test(fileName)) {
             unlinkSync(join(TMP_DIR, fileName));
           }
         });
+
+        log([`${logPrefix()} Parsing generated JSON report file content ...`]);
 
         const data = JSON.parse(jsonReportContent);
 
@@ -136,9 +181,23 @@ export const asyncLighthouseCommand = (
           seo: data.categories.seo.score,
         };
 
+        log([
+          '----',
+          `${logPrefix()} Audit finished after ${getTimePassed() / 1000}s`,
+        ]);
+
+        logFileStream?.end();
+
         return resolve({ score, jsonReportContent, htmlReportContent });
       } catch (error) {
-        console.log(error);
+        log([
+          '----',
+          `${logPrefix()} Audit failed after ${getTimePassed() / 1000}s`,
+          'Error:',
+          error.toString(),
+        ]);
+
+        logFileStream?.end();
       }
 
       resolve(null);
