@@ -84,6 +84,8 @@ export const serveReport: RequestHandler[] = [
         res.status(404).send('Report not found');
       }
     } catch (error) {
+      console.log('Error returning report');
+      console.error(error);
       res.status(404).send('Report not found');
     }
   },

@@ -100,9 +100,17 @@ export const parseToLines = (data: unknown): string[] =>
 export const compress = (input: string) =>
   new Promise<string>((resolve, reject) => {
     deflate(input, { level: 9 }, (err, buffer) => {
-      if (err) reject();
+      if (err) return reject(err);
 
-      resolve(buffer.toString('base64'));
+      let bufferStr: string;
+
+      try {
+        bufferStr = buffer.toString('utf8');
+      } catch (error) {
+        reject(error);
+      }
+
+      resolve(bufferStr);
     });
   });
 
@@ -111,10 +119,20 @@ export const compress = (input: string) =>
  */
 export const decompress = (input: string) =>
   new Promise<string>((resolve, reject) => {
-    inflate(Buffer.from(input, 'base64'), (err, buffer) => {
-      if (err) reject();
+    const compressedBuffer = Buffer.from(input, 'base64');
 
-      resolve(buffer.toString('utf8'));
+    inflate(compressedBuffer, (err, buffer) => {
+      if (err) return reject(err);
+
+      let bufferStr: string;
+
+      try {
+        bufferStr = buffer.toString('utf8');
+      } catch (error) {
+        reject(error);
+      }
+
+      resolve(bufferStr);
     });
   });
 
