@@ -1,3 +1,5 @@
+import { deflate, inflate } from 'zlib';
+import { spawn } from 'child_process';
 import * as stripAnsi from 'strip-ansi';
 
 /**
@@ -91,3 +93,58 @@ export const parseToLines = (data: unknown): string[] =>
     .map((line) => line.trim())
     .filter(Boolean)
     .map(stripAnsi as any);
+
+/**
+ * Deflates a given string with the Zlib module.
+ */
+export const compress = (input: string) =>
+  new Promise<string>((resolve, reject) => {
+    deflate(input, { level: 9 }, (err, buffer) => {
+      if (err) reject();
+
+      resolve(buffer.toString('base64'));
+    });
+  });
+
+/**
+ * Inflates a given string with the Zlib module.
+ */
+export const decompress = (input: string) =>
+  new Promise<string>((resolve, reject) => {
+    inflate(Buffer.from(input, 'base64'), (err, buffer) => {
+      if (err) reject();
+
+      resolve(buffer.toString('utf8'));
+    });
+  });
+
+/**
+ * Async wrapper for the spawn function.
+ */
+type SpawnAsyncOptions = {
+  args?: string[];
+  onStdOutData?: (data: Buffer) => void;
+  onStdErrData?: (data: Buffer) => void;
+  onClose?: (code: number, signal: NodeJS.Signals) => void;
+};
+
+export const spawnAsync = (command: string, options: SpawnAsyncOptions = {}) =>
+  new Promise((resolve) => {
+    const cmd = spawn(command, options.args || []);
+
+    if (options.onStdOutData) {
+      cmd.stdout.on('data', options.onStdOutData);
+    }
+
+    if (options.onStdErrData) {
+      cmd.stderr.on('data', options.onStdErrData);
+    }
+
+    cmd.on('close', (code, signal) => {
+      resolve({ code, signal });
+
+      if (options.onClose) {
+        options.onClose(code, signal);
+      }
+    });
+  });
