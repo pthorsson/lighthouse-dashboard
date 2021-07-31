@@ -1,7 +1,7 @@
 import { RequestHandler } from 'express';
 import { join } from 'path';
 import { APP_DIST_DIR, DASHBOARD_VERSION, BUILD_TIMESTAMP } from '@config';
-import { decodeBase64 } from '@lib/utils';
+import { decompress } from '@lib/utils';
 import * as lighthouse from '@lib/lighthouse';
 import * as reportCache from '@lib/report-cache';
 import Report from '@models/report.model';
@@ -67,13 +67,14 @@ export const serveReport: RequestHandler[] = [
 
       if (report) {
         if (typeof json !== 'undefined') {
-          const json = JSON.parse(decodeBase64(report.encodedJson));
+          const decompressedJsonStr = await decompress(report.encodedJson);
+          const json = JSON.parse(decompressedJsonStr);
 
           reportCache.save(audit, 'json', json);
 
           res.json(json);
         } else {
-          const html = decodeBase64(report.encodedHtml);
+          const html = await decompress(report.encodedHtml);
 
           reportCache.save(audit, 'html', html);
 
@@ -83,6 +84,8 @@ export const serveReport: RequestHandler[] = [
         res.status(404).send('Report not found');
       }
     } catch (error) {
+      console.log('Error returning report');
+      console.error(error);
       res.status(404).send('Report not found');
     }
   },

@@ -1,10 +1,10 @@
 import { join } from 'path';
 import { debounce } from 'lodash';
+import fetch from 'node-fetch';
 import { createLogger, createTimer, encodeBase64, delay } from '@lib/utils';
 import * as serverState from '@lib/server-state';
 import { TMP_DIR } from '@config';
 import { asyncLighthouseCommand } from './lighthouse.utils';
-import fetch from 'node-fetch';
 
 import Section from '@models/section.model';
 import PageGroup from '@models/page-group.model';
@@ -349,10 +349,11 @@ export default class LighthouseHandler {
           page: page._id,
         });
 
-        const encodedHtml = encodeBase64(result.htmlReportContent);
-        const encodedJson = encodeBase64(result.jsonReportContent);
-
-        await Report.create({ audit: auditDoc._id, encodedHtml, encodedJson });
+        await Report.create({
+          audit: auditDoc._id,
+          encodedHtml: result.htmlReportContent,
+          encodedJson: result.jsonReportContent,
+        });
 
         const audit: Lhd.Audit = {
           _id: auditDoc._id.toHexString(),
