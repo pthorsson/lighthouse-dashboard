@@ -1,7 +1,8 @@
 import { join } from 'path';
 import { debounce } from 'lodash';
+import * as filesize from 'filesize';
 import fetch from 'node-fetch';
-import { createLogger, createTimer, encodeBase64, delay } from '@lib/utils';
+import { createLogger, createTimer, delay, compress } from '@lib/utils';
 import * as serverState from '@lib/server-state';
 import { TMP_DIR } from '@config';
 import { asyncLighthouseCommand } from './lighthouse.utils';
@@ -69,7 +70,7 @@ export default class LighthouseHandler {
   private _state: LighthouseState;
 
   // Log function
-  private log: (message: string) => void;
+  private log: (message: string, includeTimestamp?: boolean) => void;
 
   constructor(section: Lhd.Section) {
     this._section = {
@@ -351,8 +352,8 @@ export default class LighthouseHandler {
 
         await Report.create({
           audit: auditDoc._id,
-          encodedHtml: result.htmlReportContent,
-          encodedJson: result.jsonReportContent,
+          encodedJson: result.jsonCompressed,
+          encodedHtml: result.htmlCompressed,
         });
 
         const audit: Lhd.Audit = {
@@ -415,18 +416,40 @@ export default class LighthouseHandler {
       cpuThrottle,
       logFile: join(TMP_DIR, `latest-run_${this.section.slug}.log`),
       onLogEvent: (lines, logToConsole = true) => {
-        logToConsole && lines.forEach(this.log);
+        logToConsole && lines.forEach((line) => this.log(line, false));
       },
     });
 
     const duration = getTimePassed();
 
     if (!results) {
-      this.log(`Audit failed after ${duration / 1000} seconds`);
       return null;
     }
 
-    this.log(`Audit completed successfully after ${duration / 1000} seconds`);
+    this.log('Compressing reports ...');
+
+    // Compress JSON and HTML reports
+    const jsonCompressed = await compress(results.jsonReportContent);
+    const htmlCompressed = await compress(results.htmlReportContent);
+
+    this.log('Compressing reports DONE');
+
+    // Get data sizes
+    const jsonInputSize = Buffer.byteLength(results.jsonReportContent);
+    const jsonOutputSize = Buffer.byteLength(jsonCompressed);
+    const htmlInputSize = Buffer.byteLength(results.htmlReportContent);
+    const htmlOutputSize = Buffer.byteLength(htmlCompressed);
+
+    this.log(
+      `JSON report size ${filesize(jsonInputSize)} (${filesize(
+        jsonOutputSize
+      )} compressed)`
+    );
+    this.log(
+      `HTML report size ${filesize(htmlInputSize)} (${filesize(
+        htmlOutputSize
+      )} compressed)`
+    );
 
     return {
       audit: {
@@ -434,8 +457,8 @@ export default class LighthouseHandler {
         duration,
         ...results.score,
       },
-      jsonReportContent: results.jsonReportContent,
-      htmlReportContent: results.htmlReportContent,
+      jsonCompressed,
+      htmlCompressed,
     };
   }
 }

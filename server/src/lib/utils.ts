@@ -24,8 +24,14 @@ export const createTimer = () => {
 /**
  * Wrapper for console.log that adds a given prefix.
  */
-export const createLogger = (label: string) => (message: string) =>
-  console.log(`[${label}] ${message}`);
+export const createLogger =
+  (label: string) =>
+  (message: string, includeTimestamp = true) =>
+    console.log(
+      `[${label}] ${
+        includeTimestamp ? `${new Date().toUTCString()} ` : ''
+      }${message}`
+    );
 
 /**
  * A function that always returns an incremented number on each call.
@@ -35,18 +41,6 @@ export const incrementId = (
   () =>
     i++
 )();
-
-/**
- * Wrapper function for encoding a base64 string.
- */
-export const encodeBase64 = (str: string) =>
-  Buffer.from(str).toString('base64');
-
-/**
- * Wrapper function for decoding a base64 string.
- */
-export const decodeBase64 = (base64Str: string) =>
-  Buffer.from(base64Str, 'base64').toString();
 
 /**
  * Generate a random base64 string.
@@ -105,7 +99,7 @@ export const compress = (input: string) =>
       let bufferStr: string;
 
       try {
-        bufferStr = buffer.toString('utf8');
+        bufferStr = buffer.toString('base64');
       } catch (error) {
         reject(error);
       }
