@@ -30,7 +30,7 @@ const LandingPage = () => {
             <SectionsWrapper
               columns={Math.max(1, Math.min(3, getSections.data.length + 1))}
             >
-              {getSections.data.map(section => (
+              {getSections.data.map((section) => (
                 <SectionLink
                   key={section._id}
                   to={`/${section.slug}${token ? `?token=${token}` : ''}`}
@@ -116,6 +116,8 @@ const SectionLink = styled(Link)`
   justify-content: center;
   position: relative;
   height: 200px;
+  padding: 16px;
+  text-align: center;
   border-radius: 4px;
   background: ${({ theme }) => theme.bg};
 
