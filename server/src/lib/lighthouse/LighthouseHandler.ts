@@ -2,6 +2,7 @@ import { join } from 'path';
 import { debounce } from 'lodash';
 import * as filesize from 'filesize';
 import fetch from 'node-fetch';
+import { schedule } from 'node-cron';
 import { createLogger, createTimer, delay, compress } from '@lib/utils';
 import * as serverState from '@lib/server-state';
 import { TMP_DIR } from '@config';
@@ -77,12 +78,24 @@ export default class LighthouseHandler {
       _id: section._id,
       name: section.name,
       slug: section.slug,
+      weekSchedule: section.weekSchedule,
     };
     this.log = createLogger(`lighthouse-handler#${this._section.slug}`);
     this._state = {
       active: null,
       queue: [],
     };
+
+    schedule('0 0 * * * *', () => {
+      const date = new Date();
+      const currentHour = date.getUTCHours();
+      const hour = this._section.weekSchedule[date.getUTCDay()];
+
+      if (hour === currentHour) {
+        this.log('Scheduled run - queueing all audits');
+        this.runAllAudits();
+      }
+    });
   }
 
   /**
@@ -116,12 +129,13 @@ export default class LighthouseHandler {
 
       const section = await Section.findOne({
         slug: this._section.slug,
-      }).select('_id name slug');
+      }).select('_id name slug weekSchedule');
 
       this._section = {
         _id: section._id.toHexString(),
         name: section.name,
         slug: section.slug,
+        weekSchedule: section.weekSchedule,
       };
     }
 
@@ -225,6 +239,7 @@ export default class LighthouseHandler {
       _id: this._section._id,
       name: this._section.name,
       slug: this._section.slug,
+      weekSchedule: this._section.weekSchedule,
     };
   }
 

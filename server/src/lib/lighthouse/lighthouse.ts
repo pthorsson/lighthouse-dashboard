@@ -24,7 +24,7 @@ const sectionIntances: SectionInstance[] = [];
 (async () => await syncSections())();
 
 export async function syncSections() {
-  const sections = await Section.find().select('_id name slug');
+  const sections = await Section.find().select('_id name slug weekSchedule');
 
   // Remove deleted sections
   for (let i = 0; i < sectionIntances.length; i++) {
@@ -43,9 +43,7 @@ export async function syncSections() {
       ({ slug }) => slug === sectionInstance.sectionSlug
     );
 
-    if (sectionInstance.handler.section.name !== section.name) {
-      sectionInstance.handler.sync(true);
-    }
+    sectionInstance.handler.sync(true);
   }
 
   // Add new sections

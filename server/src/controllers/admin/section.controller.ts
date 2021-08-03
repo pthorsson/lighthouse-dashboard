@@ -12,10 +12,10 @@ export const getAll: RequestHandler[] = [
 
 export const create: RequestHandler[] = [
   async (req, res, next) => {
-    const { name, slug } = req.body;
+    const { name, slug, weekSchedule } = req.body;
 
     try {
-      const section = await Section.create({ name, slug });
+      const section = await Section.create({ name, slug, weekSchedule });
 
       await lighthouse.syncSections();
 
@@ -49,13 +49,14 @@ export const remove: RequestHandler[] = [
 export const update: RequestHandler[] = [
   async (req, res, next) => {
     const { id } = req.params;
-    const { name } = req.body;
+    const { name, weekSchedule } = req.body;
 
     const section = await Section.findOne({ _id: id });
 
     if (section) {
       try {
         section.name = name || section.name;
+        section.weekSchedule = weekSchedule || section.weekSchedule;
 
         await section.save();
         await lighthouse.syncSections();
