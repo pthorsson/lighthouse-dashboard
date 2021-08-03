@@ -147,14 +147,16 @@ const ScoreItem: React.FC<ScoreItemProps> = memo(({ value, previousValue }) => {
 
   return (
     <ScoreItemWrapper>
-      <ScoreBarBackground value={value} />
-      {value && (
-        <ScoreBarFill value={value} previousValue={previousValue}>
-          {theme.itemLayout === 'compared' && !!previousValue && (
-            <ScoreBarDiff value={value} previousValue={previousValue} />
-          )}
-        </ScoreBarFill>
-      )}
+      <ScoreBar>
+        <ScoreBarBackground value={value} />
+        {value && (
+          <ScoreBarFill value={value} previousValue={previousValue}>
+            {theme.itemLayout === 'compared' && !!previousValue && (
+              <ScoreBarDiff value={value} previousValue={previousValue} />
+            )}
+          </ScoreBarFill>
+        )}
+      </ScoreBar>
       <ScoreLabel value={value}>
         {typeof value === 'undefined'
           ? 'n/a'
@@ -198,6 +200,15 @@ const ScoreLabel = styled.div<ScoreLabelProps>`
           )
         : darken(0.5, theme.fg)};
     `}
+`;
+
+const ScoreBar = styled.div`
+  overflow: hidden;
+  position: absolute;
+  left: 0;
+  top: 0;
+  height: 100%;
+  width: 100%;
 `;
 
 type ScoreBarBackgroundProps = {
@@ -309,7 +320,7 @@ const ScoreBarDiff = styled.div<ScoreBarDiffProps>`
     content: '${({ value, previousValue }) => {
       const diff = value - previousValue;
       return diff > 0 ? `+${perc(diff)}` : diff < 0 ? `${perc(diff)}` : '';
-    }}'
+    }}';
   }
 `;
 
