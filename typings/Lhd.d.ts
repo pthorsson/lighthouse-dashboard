@@ -3,6 +3,7 @@ declare module Lhd {
     _id: string;
     name: string;
     slug: string;
+    weekSchedule?: number[];
     pageGroups?: PageGroup[];
   };
 
