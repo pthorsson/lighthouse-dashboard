@@ -15,6 +15,7 @@
     "@types/lodash": "4.14.171",
     "@types/lru-cache": "5.1.1",
     "@types/module-alias": "2.0.1",
+    "@types/node-cron": "2.0.4",
     "@types/node-fetch": "2.5.12",
     "@types/passport": "1.0.7",
     "@types/passport-azure-ad": "4.3.0",
@@ -24,18 +25,22 @@
     "body-parser": "1.19.0",
     "dotenv": "*",
     "express": "4.17.1",
+    "filesize": "7.0.0",
     "jsonwebtoken": "8.5.1",
     "lighthouse": "8.1.0",
     "lodash": "4.17.21",
     "lru-cache": "6.0.0",
     "module-alias": "2.2.2",
     "mongoose": "5.13.3",
+    "node-cron": "3.0.0",
     "node-fetch": "2.6.1",
     "passport": "0.4.1",
     "passport-azure-ad": "4.3.0",
     "passport-jwt": "4.0.0",
     "socket.io": "2.4.1",
-    "typescript": "*"
+    "strip-ansi": "7.0.0",
+    "typescript": "*",
+    "uuid": "8.3.2"
   },
   "devDependencies": {
     "nodemon": "2.0.12"

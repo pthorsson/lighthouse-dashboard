@@ -1,3 +1,10 @@
+import { join } from 'path';
+import { TMP_DIR } from '@config';
+import * as serverState from '@lib/server-state';
+import {
+  calculateCpuThrottling,
+  asyncLighthouseCommand,
+} from './lighthouse.utils';
 import LighthouseHandler, {
   LIGHTHOUSE_HANDLER_STATES,
   LighthouseEvents,
@@ -17,7 +24,7 @@ const sectionIntances: SectionInstance[] = [];
 (async () => await syncSections())();
 
 export async function syncSections() {
-  const sections = await Section.find().select('_id name slug');
+  const sections = await Section.find().select('_id name slug weekSchedule');
 
   // Remove deleted sections
   for (let i = 0; i < sectionIntances.length; i++) {
@@ -36,9 +43,7 @@ export async function syncSections() {
       ({ slug }) => slug === sectionInstance.sectionSlug
     );
 
-    if (sectionInstance.handler.section.name !== section.name) {
-      sectionInstance.handler.sync(true);
-    }
+    sectionInstance.handler.sync(true);
   }
 
   // Add new sections
@@ -52,8 +57,8 @@ export async function syncSections() {
         emit('data-update', section.slug, data);
       });
 
-      handler.on('state-update', (data) => {
-        emit('state-update', section.slug, data);
+      handler.on('section-state-update', (data) => {
+        emit('section-state-update', section.slug, data);
       });
 
       handler.on('audit-complete', (data) => {
@@ -71,6 +76,12 @@ export async function syncSections() {
 }
 
 /**
+ * Helper function for getting section instance.
+ */
+const getSectionInstance = (slug: string) =>
+  sectionIntances.find(({ sectionSlug }) => sectionSlug === slug);
+
+/**
  * Triggers a section data sync with the database.
  */
 export const syncSectionData = async (sectionSlug: string) => {
@@ -84,7 +95,7 @@ export const syncSectionData = async (sectionSlug: string) => {
 /**
  * Returns current state for section.
  */
-export const getState = (sectionSlug: string) => {
+export const getSectionState = (sectionSlug: string) => {
   const sectionIntance = getSectionInstance(sectionSlug);
 
   if (sectionIntance) {
@@ -97,7 +108,7 @@ export const getState = (sectionSlug: string) => {
 /**
  * Gets fully populated data from selected Lighthouse instance.
  */
-export const getData = (sectionSlug: string) => {
+export const getSectionData = (sectionSlug: string) => {
   const sectionIntance = getSectionInstance(sectionSlug);
 
   if (sectionIntance) {
@@ -175,30 +186,56 @@ export const getSections = () =>
  * Run audit in selected section instance.
  */
 export const runAudit = (sectionSlug: string, id: string) => {
-  const sectionIntance = getSectionInstance(sectionSlug);
+  const { state } = serverState.get();
 
-  if (sectionIntance) {
-    const status = sectionIntance.handler.runAudit(id);
-
-    return status;
+  if (state === serverState.SERVER_STATE.ERROR) {
+    return LIGHTHOUSE_HANDLER_STATES.SERVER_ERROR;
   }
 
-  return LIGHTHOUSE_HANDLER_STATES.INVALID_SECTION;
+  if (
+    state === serverState.SERVER_STATE.CALIBRATING ||
+    state === serverState.SERVER_STATE.INITIALIZING
+  ) {
+    return LIGHTHOUSE_HANDLER_STATES.SERVER_NOT_READY;
+  }
+
+  const sectionIntance = getSectionInstance(sectionSlug);
+
+  if (!sectionIntance) {
+    return LIGHTHOUSE_HANDLER_STATES.INVALID_SECTION;
+  }
+
+  const status = sectionIntance.handler.runAudit(id);
+
+  return status;
 };
 
 /**
  * Run all audits in selected section instance.
  */
 export const runAllAudits = (sectionSlug: string, onlyEmpty = false) => {
-  const sectionIntance = getSectionInstance(sectionSlug);
+  const { state } = serverState.get();
 
-  if (sectionIntance) {
-    sectionIntance.handler.runAllAudits(onlyEmpty);
-
-    return LIGHTHOUSE_HANDLER_STATES.OK;
+  if (state === serverState.SERVER_STATE.ERROR) {
+    return LIGHTHOUSE_HANDLER_STATES.SERVER_ERROR;
   }
 
-  return LIGHTHOUSE_HANDLER_STATES.INVALID_SECTION;
+  if (
+    state === serverState.SERVER_STATE.CALIBRATING ||
+    state === serverState.SERVER_STATE.INITIALIZING
+  ) {
+    return LIGHTHOUSE_HANDLER_STATES.SERVER_NOT_READY;
+  }
+
+  const sectionIntance = getSectionInstance(sectionSlug);
+
+  if (!sectionIntance) {
+    return LIGHTHOUSE_HANDLER_STATES.INVALID_SECTION;
+  }
+
+  sectionIntance.handler.runAllAudits(onlyEmpty);
+
+  return LIGHTHOUSE_HANDLER_STATES.OK;
 };
 
 /**
@@ -232,7 +269,55 @@ export const removeAllQueuedAudits = (sectionSlug: string) => {
 };
 
 /**
- * Helper function for getting section instance.
+ * This function will run a lighthouse audit and return the benchmarkIndex and
+ * cpuThrottle, so that we can set an appropriate cpuThrottle for the
+ * environment the application is running in.
  */
-const getSectionInstance = (slug: string) =>
-  sectionIntances.find(({ sectionSlug }) => sectionSlug === slug);
+
+type CalibrationCallback = (
+  data: {
+    cpuThrottle: number | null;
+    benchmarkIndex: number | null;
+  },
+  error?: any
+) => void;
+
+export const calibrate = (callback: CalibrationCallback) => {
+  const url = 'https://www.google.com/';
+
+  serverState.set({ state: serverState.SERVER_STATE.CALIBRATING });
+
+  asyncLighthouseCommand({
+    url,
+    logFile: join(TMP_DIR, 'latest-calibration-run.log'),
+  }).then(({ jsonReportContent }) => {
+    let cpuThrottle = 1;
+
+    try {
+      const jsonData = JSON.parse(jsonReportContent);
+      const benchmarkIndex = jsonData?.environment?.benchmarkIndex;
+
+      if (!benchmarkIndex) {
+        throw Error('Invalid benchmarkIndex - Lighthouse calibration failed?');
+      }
+
+      cpuThrottle = calculateCpuThrottling(benchmarkIndex);
+
+      callback(
+        {
+          cpuThrottle,
+          benchmarkIndex,
+        },
+        null
+      );
+    } catch (error) {
+      callback(
+        {
+          cpuThrottle: null,
+          benchmarkIndex: null,
+        },
+        error
+      );
+    }
+  });
+};

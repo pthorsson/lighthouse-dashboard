@@ -4,6 +4,7 @@ import { BrowserRouter as Router, Switch, Route } from 'react-router-dom';
 import Display from '@pages/display';
 import Dashboard from '@pages/dashboard';
 import LandingPage from '@pages/landing-page';
+import Log from '@pages/log';
 import { useCurrentUser } from '@hooks';
 import SectionVerifier from '@components/section-verifier';
 import ErrorScreen from '@components/error-screen';
@@ -35,6 +36,16 @@ const App = () => {
               <Display />
             </SectionVerifier>
           </Route>
+        )}
+        {currentUser.role >= USER_ROLES.SUPERADMIN && (
+          <>
+            <Route exact path="/log/calibration">
+              <Log type="calibration" />
+            </Route>
+            <Route exact path="/log/section/:section">
+              <Log type="section" />
+            </Route>
+          </>
         )}
         <Route>
           <ErrorScreen

@@ -9,7 +9,7 @@ type AppInfoData = {
 };
 
 const AboutApp: React.FC = () => {
-  const { data } = useApi<AppInfoData | null>('/api/application-info', {
+  const { data } = useApi<AppInfoData | null>('/api/admin/info/application', {
     runOnMount: true,
   });
 

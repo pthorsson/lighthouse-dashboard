@@ -1,6 +1,8 @@
 import { join } from 'path';
 
-export const VERBOSE = true;
+export const VERBOSE_LIGHTHOUSE_LOGGING = /1|true/.test(
+  process.env.VERBOSE_LIGHTHOUSE_LOGGING
+);
 
 export const PORT = parseInt(process.env.PORT) || 3000;
 

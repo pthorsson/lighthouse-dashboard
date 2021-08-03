@@ -9,8 +9,10 @@ import devHotReload from './dev-hot-reload';
 import * as lighthouse from '@lib/lighthouse';
 import { mongoose } from '@db';
 import { ensureUserRole, setCurrentUser, USER_ROLES } from '@middleware';
+import * as serverState from '@lib/server-state';
 
 import * as userController from '@controllers/admin/user.controller';
+import * as infoController from '@controllers/admin/info.controller';
 import * as sectionController from '@controllers/admin/section.controller';
 import * as pageGroupController from '@controllers/admin/page-group.controller';
 import * as pageController from '@controllers/admin/page.controller';
@@ -29,20 +31,64 @@ mongoose.connect(process.env.MONGO_CONNECTION_STR, {
   useUnifiedTopology: true,
 });
 
+if (process.env.NODE_ENV === 'development') {
+  // Set default CPU throttle if in development mode
+  console.log('Set default CPU throttle 4 in development mode');
+
+  serverState.set({
+    cpuThrottle: 4,
+    state: serverState.SERVER_STATE.OK,
+  });
+} else {
+  // Preform a calibration of Lighthouse on start-up
+  console.log('Calibrating Lighthouse ...');
+
+  lighthouse.calibrate(({ cpuThrottle, benchmarkIndex }, error) => {
+    if (!cpuThrottle || error) {
+      serverState.set({
+        state: serverState.SERVER_STATE.ERROR,
+      });
+
+      console.log('Calibrating Lighthouse ERROR');
+      console.error(error);
+    } else {
+      serverState.set({
+        cpuThrottle,
+        state: serverState.SERVER_STATE.OK,
+      });
+
+      console.log(
+        `Calibrating Lighthouse DONE - cpuThrottle set to ${cpuThrottle.toFixed(
+          1
+        )} based on benchmarkIndex ${benchmarkIndex}`
+      );
+    }
+  });
+}
+
 // Set up socket listeners on socket connect
 io.on('connection', (socket) => {
   const { section } = socket.handshake.query;
 
+  socket.on('request-server-state-update', () => {
+    const { state } = serverState.get();
+    socket.emit('server-state-update', state);
+  });
+
   // Recieve section state request and send section state
-  socket.on('request-state-update', (section) => {
-    const state = lighthouse.getState(section);
-    socket.emit('state-update', { state });
+  socket.on('request-section-state-update', (section) => {
+    const state = lighthouse.getSectionState(section);
+    socket.emit('section-state-update', { state });
   });
 
   // Recieve section data request and send section data
   socket.on('request-section-data', (section) => {
-    const data = lighthouse.getData(section);
+    const data = lighthouse.getSectionData(section);
     socket.emit('section-data', { section: data });
+  });
+
+  const serverStateSub = serverState.subscribe(({ state }) => {
+    socket.emit('server-state-update', state);
   });
 
   // Subscribe to lighthouse data updates
@@ -51,12 +97,16 @@ io.on('connection', (socket) => {
   });
 
   // Subscribe to lighthouse state updates
-  const stateUpdateSub = lighthouse.on('state-update', section, (data) => {
-    console.log(`==== Lighthouse state updated (${section}) ====`);
-    console.log(JSON.stringify(data.state, null, 2));
+  const stateUpdateSub = lighthouse.on(
+    'section-state-update',
+    section,
+    (data) => {
+      console.log(`==== Lighthouse state updated (${section}) ====`);
+      console.log(JSON.stringify(data.state, null, 2));
 
-    socket.emit('state-update', data);
-  });
+      socket.emit('section-state-update', data);
+    }
+  );
 
   // Subscribe to lighthouse audit completions
   const auditCompleteSub = lighthouse.on('audit-complete', section, (data) => {
@@ -65,6 +115,7 @@ io.on('connection', (socket) => {
 
   // Remove subscriptions for socket on disconnect
   socket.on('disconnect', () => {
+    serverStateSub.remove();
     dataUpdateSub.remove();
     stateUpdateSub.remove();
     auditCompleteSub.remove();
@@ -87,13 +138,21 @@ app.use('/static', express.static(APP_STATIC_DIR));
 // ---- Admin API endpoints
 
 // Ensure SUPERADMIN role for all admin user endpoints
-app.use('/api/admin/user', ensureUserRole(USER_ROLES.SUPERADMIN));
+app.use(
+  ['/api/admin/user', '/api/admin/info'],
+  ensureUserRole(USER_ROLES.SUPERADMIN)
+);
 
 // User handling endpoints
 app.get('/api/admin/user', userController.getAll);
 app.post('/api/admin/user', userController.create);
 app.put('/api/admin/user/:id', userController.update);
 app.delete('/api/admin/user/:id', userController.remove);
+
+// Application info endpoints
+app.get('/api/admin/info/application', infoController.getApplicationInfo);
+app.get('/api/admin/info/calibration-log', infoController.getCalibrationLog);
+app.get('/api/admin/info/section-log/:section', infoController.getSectionLog);
 
 // Ensure ADMIN role for the rest of the admin endpoints
 app.use(
@@ -175,9 +234,6 @@ app.get('/api/get-current-user', [
   setCurrentUser(),
   ...publicController.getCurrentUser,
 ]);
-
-// Serves application info data
-app.get('/api/application-info', publicController.getApplicationInfo);
 
 // ---- Other
 

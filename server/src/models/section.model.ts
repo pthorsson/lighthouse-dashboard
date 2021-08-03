@@ -6,6 +6,7 @@ import PageGroup from '@models/page-group.model';
 interface ISection extends Document {
   name: string;
   slug: string;
+  weekSchedule: number[];
   createdAt?: Date;
   updatedAt?: Date;
 }
@@ -26,6 +27,21 @@ const SectionSchema = new Schema(
         message: 'Section slug can only contain a-z, 0-9 and -',
       },
     },
+    weekSchedule: {
+      type: [Number],
+      default: [-1, -1, -1, -1, -1, -1, -1],
+      validate: [
+        {
+          validator: (value: number[]) => value.length === 7,
+          message: 'weekSchedule array must contain 7 numbers',
+        },
+        {
+          validator: (value: number[]) =>
+            value.every((hour) => hour >= -1 && hour <= 23),
+          message: 'weekSchedule array item must be between -1 and 23',
+        },
+      ],
+    },
     createdAt: Date,
     updatedAt: Date,
   },
@@ -35,7 +51,7 @@ const SectionSchema = new Schema(
 );
 
 // Cascade deletion hook
-SectionSchema.pre('deleteMany', async function(next) {
+SectionSchema.pre('deleteMany', async function (next) {
   const query: any = this;
   const sections = await query.find();
 

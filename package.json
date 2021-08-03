@@ -1,6 +1,6 @@
 {
   "name": "lighthouse-dashboard",
-  "version": "0.1.4",
+  "version": "1.1.0",
   "private": true,
   "workspaces": [
     "server",

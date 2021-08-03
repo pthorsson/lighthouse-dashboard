@@ -3,6 +3,7 @@ import styled, { ThemeProvider } from 'styled-components';
 import { Link } from 'react-router-dom';
 import PageGroup from '@components/page-group';
 import Navigation from '@components/navigation';
+import ServerStateBanner from '@components/server-state-banner';
 import { useLighthouse, useAppState } from '@hooks';
 import { getUrlQuery } from '@lib/utils';
 
@@ -16,6 +17,7 @@ const Dashboard = () => {
     <ThemeProvider
       theme={{ itemLayout: appState.comparedMode ? 'compared' : 'standard' }}
     >
+      <ServerStateBanner />
       <Wrapper>
         <NavWrapper>
           <HeaderWrapper>
