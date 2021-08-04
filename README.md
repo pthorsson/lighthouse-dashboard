@@ -2,27 +2,28 @@
 
 An application for managing multiple websites in Lighthouse.
 
-⚠️ **A more detailed README is currently being worked on.**
-
-⚠️ **There are alot of stuff that needs to be done and polished, but most things should be working by now.**
-
 ## Application info
 
-(todo)
+The server of the application runs an [Express](https://expressjs.com/) server
+and uses web sockets to push the state of the audits to the client. It uses the
+[Lighthouse](https://www.npmjs.com/package/lighthouse) package to run the audits
+from the server.
+
+The client is build with [React](https://reactjs.org/).
 
 ### Roles
 
-| Endpoint / Required role  | None |  Viewer | User |  Admin  |  Super admin |
-| ------------------------- | ---- | ------- | ---- | ------- | ------------ |
-| `/api/application-info`   | ✓    | ✓       | ✓    | ✓       | ✓            |
-| `/api/get-current-user`   | ✓    | ✓       | ✓    | ✓       | ✓            |
-| `/api/data/sections`      | ✓    | ✓       | ✓    | ✓       | ✓            |
-| `/api/token/*`            | -    | -       | ✓    | ✓       | ✓            |
-| `/api/actions/*`          | -    | -       | ✓    | ✓       | ✓            |
-| `/api/admin/section/*`    | -    | -       | -    | ✓       | ✓            |
-| `/api/admin/page-group/*` | -    | -       | -    | ✓       | ✓            |
-| `/api/admin/page/*`       | -    | -       | -    | ✓       | ✓            |
-| `/api/admin/user/*`       | -    | -       | -    | -       | ✓            |
+| Endpoint / Required role  | None | Viewer | User | Admin | Super admin |
+| ------------------------- | ---- | ------ | ---- | ----- | ----------- |
+| `/api/get-current-user`   | ✓    | ✓      | ✓    | ✓     | ✓           |
+| `/api/data/sections`      | ✓    | ✓      | ✓    | ✓     | ✓           |
+| `/api/token/*`            | -    | -      | ✓    | ✓     | ✓           |
+| `/api/actions/*`          | -    | -      | ✓    | ✓     | ✓           |
+| `/api/admin/section/*`    | -    | -      | -    | ✓     | ✓           |
+| `/api/admin/page-group/*` | -    | -      | -    | ✓     | ✓           |
+| `/api/admin/page/*`       | -    | -      | -    | ✓     | ✓           |
+| `/api/admin/info/*`       | -    | -      | -    | -     | ✓           |
+| `/api/admin/user/*`       | -    | -      | -    | -     | ✓           |
 
 ## Installation
 
@@ -30,15 +31,16 @@ Requirements and instructions for installing and running the application in deve
 
 ### Dependencies
 
-- Yarn >= 1.22 ?
-- Node >= 10 ?
-- MongoDB
-- Google Chrome (Headless)
-- Azure AD application
+- [Yarn](https://yarnpkg.com/) >= 1.22
+- [Node](https://nodejs.org/en/) >= 10
+- [MongoDB](https://www.mongodb.com/)
+- [Google Chrome](https://www.google.com/chrome/) (Headless)
+- [Azure AD](https://azure.microsoft.com/en-us/services/active-directory/)
+  application
 
 ### Run application
 
-1. Make sure all required environment variables are availableproduction
+1. Make sure all required environment variables are available
    - `NODE_ENV` should be `development` or `production`
    - `PORT` port that the application will run on, defaults to `3000`
    - `MONGO_CONNECTION_STR` full MongoDB connection url with credentials
@@ -55,7 +57,7 @@ Requirements and instructions for installing and running the application in deve
 #### In production
 
 3. Run yarn dev script `yarn build` in project root to build both back end and front end applications.
-4. Run the server ...
+4. Run the server from the build dir in the repo `node .build/server/server.js`
 
 ---
 
