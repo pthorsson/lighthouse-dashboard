@@ -34,21 +34,21 @@ export const calculateCpuThrottling = (benchmarkIndex: number) => {
     const excess = (benchmarkIndex - 1300) / 233;
     const multiplier = 3 + excess;
 
-    return multiplier;
+    return multiplier.toFixed(1);
   } else if (benchmarkIndex >= 800) {
     // 1300 = 3x slowdown
     // 800 = 2x slowdown
     const excess = (benchmarkIndex - 800) / 500;
     const multiplier = 2 + excess;
 
-    return multiplier;
+    return multiplier.toFixed(1);
   } else {
     // 800 = 2x slowdown
     // 150 = 1x
     const excess = (benchmarkIndex - 150) / 650;
     const multiplier = 1 + excess;
 
-    return multiplier;
+    return multiplier.toFixed(1);
   }
 };
 
@@ -67,18 +67,19 @@ type LighthouseOutput = {
   score: LighthouseScore;
   htmlReportContent: string;
   jsonReportContent: string;
+  benchmarkIndex: number;
 };
 
 type LighthouseCommandConfig = {
   url: string;
-  cpuThrottle?: number;
+  cpuThrottle?: string;
   onLogEvent?: (line: string[], logToConsole?: boolean) => void;
   logFile?: string;
 };
 
 export const asyncLighthouseCommand = async ({
   url,
-  cpuThrottle = 1,
+  cpuThrottle = '1',
   onLogEvent: emitLog = () => {},
   logFile,
 }: LighthouseCommandConfig): Promise<LighthouseOutput | null> => {
@@ -98,9 +99,6 @@ export const asyncLighthouseCommand = async ({
 
   // Wrapper function for logging and emitting output
   const log = (lines: string[], verbose = true) => {
-    const lineWithTimestamp = lines.map(
-      (line) => `${new Date().toUTCString()} ${line}`
-    );
     emitLog(lines, verbose);
     logFileStream && logFileStream.write(`${lines.join('\n')}\n`);
   };
@@ -113,7 +111,7 @@ export const asyncLighthouseCommand = async ({
 
   log([
     withTimestamp(`Starting audit on ${url}`),
-    withTimestamp(`CPU throttle set to ${cpuThrottle.toFixed(1)}`),
+    withTimestamp(`CPU throttle set to ${cpuThrottle}`),
   ]);
   log(['----'], VERBOSE_LIGHTHOUSE_LOGGING);
 
@@ -138,7 +136,7 @@ export const asyncLighthouseCommand = async ({
       '--only-categories=accessibility,best-practices,performance,seo',
       '--chrome-flags="--headless --no-sandbox --disable-dev-shm-usage --disable-gpu"',
       '--verbose',
-      `--throttling.cpuSlowdownMultiplier=${cpuThrottle.toFixed(1)}`,
+      `--throttling.cpuSlowdownMultiplier=${cpuThrottle}`,
     ],
     onStdOutData: catchSpawnOutputs,
     onStdErrData: catchSpawnOutputs,
@@ -182,6 +180,10 @@ export const asyncLighthouseCommand = async ({
 
     log(['----', withTimestamp(`Score ${JSON.stringify(score, null, 2)}`)]);
 
+    const benchmarkIndex = data.environment.benchmarkIndex;
+
+    log(['----', withTimestamp(`benchmarkIndex ${benchmarkIndex}`)]);
+
     log([
       '----',
       withTimestamp(`Audit finished after ${getTimePassed() / 1000}s`),
@@ -193,6 +195,7 @@ export const asyncLighthouseCommand = async ({
       score,
       jsonReportContent,
       htmlReportContent,
+      benchmarkIndex,
     };
   } catch (error) {
     log([

@@ -36,7 +36,7 @@ if (process.env.NODE_ENV === 'development') {
   console.log('Set default CPU throttle 4 in development mode');
 
   serverState.set({
-    cpuThrottle: 4,
+    cpuThrottle: '4',
     state: serverState.SERVER_STATE.OK,
   });
 } else {
@@ -58,9 +58,7 @@ if (process.env.NODE_ENV === 'development') {
       });
 
       console.log(
-        `Calibrating Lighthouse DONE - cpuThrottle set to ${cpuThrottle.toFixed(
-          1
-        )} based on benchmarkIndex ${benchmarkIndex}`
+        `Calibrating Lighthouse DONE - cpuThrottle set to ${cpuThrottle} based on benchmarkIndex ${benchmarkIndex}`
       );
     }
   });
