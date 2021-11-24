@@ -13,11 +13,12 @@
     "dev:client": "yarn workspace @lhd/client dev",
     "build": "run-p 'build:*' && node scripts/append-build-info",
     "build:server": "yarn workspace @lhd/server build",
-    "build:client": "yarn workspace @lhd/client build"
+    "build:client": "yarn workspace @lhd/client build",
+    "nuke": "yarn cache clean --all && rm -rf node_modules server/node_modules client/node_modules yarn.lock"
   },
   "dependencies": {
     "dotenv": "10.0.0",
     "npm-run-all": "4.1.5",
-    "typescript": "4.3.5"
+    "typescript": "4.5.2"
   }
 }
