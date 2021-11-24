@@ -276,7 +276,7 @@ export const removeAllQueuedAudits = (sectionSlug: string) => {
 
 type CalibrationCallback = (
   data: {
-    cpuThrottle: number | null;
+    cpuThrottle: string | null;
     benchmarkIndex: number | null;
   },
   error?: any
@@ -291,7 +291,7 @@ export const calibrate = (callback: CalibrationCallback) => {
     url,
     logFile: join(TMP_DIR, 'latest-calibration-run.log'),
   }).then(({ jsonReportContent }) => {
-    let cpuThrottle = 1;
+    let cpuThrottle = '1';
 
     try {
       const jsonData = JSON.parse(jsonReportContent);

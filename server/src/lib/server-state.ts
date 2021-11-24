@@ -9,12 +9,12 @@ export enum SERVER_STATE {
 
 export type ServerState = {
   state: SERVER_STATE;
-  cpuThrottle: number;
+  cpuThrottle: string;
 };
 
 const initialState: ServerState = {
   state: SERVER_STATE.INITIALIZING,
-  cpuThrottle: 1,
+  cpuThrottle: '1',
 };
 
 const _state = {
