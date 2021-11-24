@@ -6,7 +6,10 @@ import { schedule } from 'node-cron';
 import { createLogger, createTimer, delay, compress } from '@lib/utils';
 import * as serverState from '@lib/server-state';
 import { TMP_DIR } from '@config';
-import { asyncLighthouseCommand } from './lighthouse.utils';
+import {
+  asyncLighthouseCommand,
+  calculateCpuThrottling,
+} from './lighthouse.utils';
 
 import Section from '@models/section.model';
 import PageGroup from '@models/page-group.model';
@@ -360,6 +363,10 @@ export default class LighthouseHandler {
       if (result) {
         const page = this._pages.find((page) => page._id === id);
 
+        const cpuThrottle = calculateCpuThrottling(result.benchmarkIndex);
+        this.log(`Updating cpuThrottle to ${cpuThrottle} ...`);
+        serverState.set({ cpuThrottle });
+
         const auditDoc = await Audit.create({
           ...result.audit,
           page: page._id,
@@ -421,9 +428,7 @@ export default class LighthouseHandler {
 
     // Execute lighthouse run
     this.log(
-      `Running lighthouse on ${url} with cpuThrottle set to ${cpuThrottle.toFixed(
-        1
-      )} ...`
+      `Running lighthouse on ${url} with cpuThrottle set to ${cpuThrottle} ...`
     );
 
     const results = await asyncLighthouseCommand({
@@ -474,6 +479,7 @@ export default class LighthouseHandler {
       },
       jsonCompressed,
       htmlCompressed,
+      benchmarkIndex: results.benchmarkIndex,
     };
   }
 }
