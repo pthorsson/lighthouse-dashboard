@@ -13,7 +13,7 @@
     "express": "4.17.1",
     "filesize": "7.0.0",
     "jsonwebtoken": "8.5.1",
-    "lighthouse": "9.0.0",
+    "lighthouse": "9.5.0",
     "lodash": "4.17.21",
     "lru-cache": "6.0.0",
     "module-alias": "2.2.2",
