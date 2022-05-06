@@ -1,11 +1,11 @@
-import { Document, Schema } from 'mongoose';
-import { RequestError } from '@lib/RequestError';
-import { mongoose } from '@db';
-import { setDates, incrementVersion } from '@models/middleware';
-import Section from '@models/section.model';
-import Page from '@models/page.model';
+import { setDates, incrementVersion } from '../models/middleware/index.js';
+import { RequestError } from '../lib/RequestError.js';
+import { mongoose } from '../db.js';
 
-interface IPageGroup extends Document {
+import Page from '../models/page.model.js';
+import Section from '../models/section.model.js';
+
+interface IPageGroup extends mongoose.Document {
   name: string;
   namePrefix: string;
   nameSuffix: string;
@@ -15,7 +15,7 @@ interface IPageGroup extends Document {
 }
 
 // Creating schema
-const PageGroupSchema: Schema = new mongoose.Schema(
+const PageGroupSchema: mongoose.Schema = new mongoose.Schema(
   {
     name: {
       type: String,

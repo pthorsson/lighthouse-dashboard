@@ -1,8 +1,8 @@
-import { readFileSync } from 'fs';
-import { join } from 'path';
+import { readFileSync } from 'node:fs';
+import { join } from 'node:path';
 import { RequestHandler } from 'express';
-import { DASHBOARD_VERSION, BUILD_TIMESTAMP, TMP_DIR } from '@config';
-import * as lighthouse from '@lib/lighthouse';
+import { DASHBOARD_VERSION, BUILD_TIMESTAMP, TMP_DIR } from '../../config.js';
+import * as lighthouse from '../../lib/lighthouse/index.js';
 
 /**
  * Get application info

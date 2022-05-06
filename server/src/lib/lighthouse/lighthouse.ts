@@ -1,17 +1,17 @@
-import { join } from 'path';
-import { TMP_DIR } from '@config';
-import * as serverState from '@lib/server-state';
+import { join } from 'node:path';
+import { TMP_DIR } from '../../config.js';
+import * as serverState from '../../lib/server-state.js';
 import {
   calculateCpuThrottling,
   asyncLighthouseCommand,
-} from './lighthouse.utils';
+} from './lighthouse.utils.js';
 import LighthouseHandler, {
   LIGHTHOUSE_HANDLER_STATES,
   LighthouseEvents,
   LighthouseCallbackDataType,
-} from './LighthouseHandler';
+} from './LighthouseHandler.js';
 
-import Section from '@models/section.model';
+import Section from '../../models/section.model.js';
 
 type SectionInstance = {
   sectionSlug: string;

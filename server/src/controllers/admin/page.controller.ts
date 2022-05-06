@@ -1,8 +1,8 @@
 import { RequestHandler } from 'express';
-import * as lighthouse from '@lib/lighthouse';
-import Page from '@models/page.model';
-import PageGroup from '@models/page-group.model';
-import Section from '@models/section.model';
+import * as lighthouse from '../../lib/lighthouse/index.js';
+import Page from '../../models/page.model.js';
+import PageGroup from '../../models/page-group.model.js';
+import Section from '../../models/section.model.js';
 
 export const getAll: RequestHandler = async (req, res) => {
   const pages = await Page.find();

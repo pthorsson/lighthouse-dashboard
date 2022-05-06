@@ -1,11 +1,11 @@
+import { join } from 'node:path';
 import { RequestHandler } from 'express';
-import { join } from 'path';
-import { APP_DIST_DIR } from '@config';
-import { decompress } from '@lib/utils';
-import * as lighthouse from '@lib/lighthouse';
-import * as reportCache from '@lib/report-cache';
-import Report from '@models/report.model';
-import { validateSection } from '@middleware';
+import { APP_DIST_DIR } from '../config.js';
+import { decompress } from '../lib/utils.js';
+import * as lighthouse from '../lib/lighthouse/index.js';
+import * as reportCache from '../lib/report-cache.js';
+import Report from '../models/report.model.js';
+import { validateSection } from '../middleware/index.js';
 
 /**
  * Get all section slugs

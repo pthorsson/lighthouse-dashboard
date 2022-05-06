@@ -1,17 +1,17 @@
-import { Document, Schema } from 'mongoose';
-import { RequestError } from '@lib/RequestError';
-import { mongoose } from '@db';
-import { setDates, incrementVersion } from '@models/middleware';
-import Audit from '@models/audit.model';
+import { setDates, incrementVersion } from '../models/middleware/index.js';
+import { RequestError } from '../lib/RequestError.js';
+import { mongoose } from '../db.js';
 
-interface IReport extends Document {
+import Audit from '../models/audit.model.js';
+
+interface IReport extends mongoose.Document {
   encodedHtml: string;
   encodedJson: string;
   audit: mongoose.Types.ObjectId;
 }
 
 // Creating schema
-const ReportSchema: Schema = new mongoose.Schema(
+const ReportSchema: mongoose.Schema = new mongoose.Schema(
   {
     encodedHtml: String,
     encodedJson: String,

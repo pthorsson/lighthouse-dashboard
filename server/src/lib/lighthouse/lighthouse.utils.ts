@@ -1,4 +1,4 @@
-import { join } from 'path';
+import { join } from 'node:path';
 import {
   readFileSync,
   existsSync,
@@ -8,9 +8,9 @@ import {
   writeFileSync,
   createWriteStream,
   WriteStream,
-} from 'fs';
-import { TMP_DIR, ROOT_DIR, VERBOSE_LIGHTHOUSE_LOGGING } from '@config';
-import { createTimer, parseToLines, compress, spawnAsync } from '@lib/utils';
+} from 'node:fs';
+import { TMP_DIR, ROOT_DIR, VERBOSE_LIGHTHOUSE_LOGGING } from '../../config.js';
+import { createTimer, parseToLines, spawnAsync } from '../../lib/utils.js';
 
 /**
  * CPU Throttle value calculation

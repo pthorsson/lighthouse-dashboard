@@ -1,6 +1,6 @@
 import { deflate, inflate } from 'zlib';
 import { spawn } from 'child_process';
-import stripAnsi = require('strip-ansi');
+import stripAnsi from 'strip-ansi';
 
 /**
  * Simple deep copy function.

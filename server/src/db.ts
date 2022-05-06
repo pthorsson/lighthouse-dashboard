@@ -1,10 +1,10 @@
-import * as mongoose from 'mongoose';
+import mongoose from 'mongoose';
 
 mongoose.connection.on('connecting', () => {
   console.log('connecting to MongoDB...');
 });
 
-mongoose.connection.on('error', error => {
+mongoose.connection.on('error', (error) => {
   console.error('Error in MongoDb connection: ' + error);
   mongoose.disconnect();
 });

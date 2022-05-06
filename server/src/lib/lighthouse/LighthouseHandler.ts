@@ -1,21 +1,24 @@
-import { join } from 'path';
-import { debounce } from 'lodash';
-import * as filesize from 'filesize';
+import { join } from 'node:path';
+import lodashPkg from 'lodash';
+import nodeCronPkg from 'node-cron';
+import filesize from 'filesize';
 import fetch from 'node-fetch';
-import { schedule } from 'node-cron';
-import { createLogger, createTimer, delay, compress } from '@lib/utils';
-import * as serverState from '@lib/server-state';
-import { TMP_DIR } from '@config';
+import { createLogger, createTimer, delay, compress } from '../../lib/utils.js';
+import * as serverState from '../../lib/server-state.js';
+import { TMP_DIR } from '../../config.js';
 import {
   asyncLighthouseCommand,
   calculateCpuThrottling,
-} from './lighthouse.utils';
+} from './lighthouse.utils.js';
 
-import Section from '@models/section.model';
-import PageGroup from '@models/page-group.model';
-import Page from '@models/page.model';
-import Audit from '@models/audit.model';
-import Report from '@models/report.model';
+import Section from '../../models/section.model.js';
+import PageGroup from '../../models/page-group.model.js';
+import Page from '../../models/page.model.js';
+import Audit from '../../models/audit.model.js';
+import Report from '../../models/report.model.js';
+
+const { debounce } = lodashPkg;
+const { schedule } = nodeCronPkg;
 
 // Response statuses of addind audits
 export enum LIGHTHOUSE_HANDLER_STATES {

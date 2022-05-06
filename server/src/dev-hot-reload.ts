@@ -1,10 +1,11 @@
-import { watch } from 'fs';
-import { join } from 'path';
-import { readFile } from 'fs';
-import { createServer } from 'http';
-import * as socketIO from 'socket.io';
-import { debounce } from 'lodash';
+import { watch, readFile } from 'node:fs';
+import { join } from 'node:path';
+import { createServer } from 'node:http';
+import socketIO from 'socket.io';
 import { Application } from 'express';
+import lodash from 'lodash';
+
+const { debounce } = lodash;
 
 type Options = {
   port: number;

@@ -1,6 +1,6 @@
 import { RequestHandler } from 'express';
-import * as lighthouse from '@lib/lighthouse';
-import { validateSection } from '@middleware';
+import * as lighthouse from '../lib/lighthouse/index.js';
+import { validateSection } from '../middleware/index.js';
 
 /**
  * Triggers an audit for selected section
