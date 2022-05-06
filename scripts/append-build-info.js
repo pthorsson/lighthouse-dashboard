@@ -1,17 +1,23 @@
-const path = require('path');
-const fs = require('fs');
-const packageJson = require('../package.json');
+import { join, dirname } from 'node:path';
+import { writeFileSync, readFileSync, appendFileSync } from 'node:fs';
+import { fileURLToPath } from 'node:url';
 
-const clientIndexHtmlFile = path.join(__dirname, '../.build/client/index.html');
-const serverConfigFile = path.join(__dirname, '../.build/server/config.js');
+const __dirname = dirname(fileURLToPath(import.meta.url));
 
-const serverConfigFileContent = fs.readFileSync(serverConfigFile, 'utf8');
+const packageJson = JSON.parse(
+  readFileSync(join(__dirname, '../package.json'), 'utf8')
+);
+
+const clientIndexHtmlFile = join(__dirname, '../.build/client/index.html');
+const serverConfigFile = join(__dirname, '../.build/server/config.js');
+
+const serverConfigFileContent = readFileSync(serverConfigFile, 'utf8');
 
 const BUILD_TIMESTAMP = new Date().toISOString();
 const DASHBOARD_VERSION = packageJson.version;
 
 // Append build info to client index file
-fs.appendFileSync(
+appendFileSync(
   clientIndexHtmlFile,
   `
 <!--
@@ -21,7 +27,7 @@ fs.appendFileSync(
 );
 
 // Add build info to server config file
-fs.writeFileSync(
+writeFileSync(
   serverConfigFile,
   serverConfigFileContent
     .replace('%%dashboard_version%%', DASHBOARD_VERSION)
