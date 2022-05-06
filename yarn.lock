@@ -1390,7 +1390,7 @@ __metadata:
     "@types/uuid": 8.3.3
     body-parser: 1.19.0
     dotenv: "*"
-    esbuild: ^0.14.38
+    esbuild: "*"
     express: 4.17.1
     filesize: 7.0.0
     jsonwebtoken: 8.5.1
@@ -1401,7 +1401,7 @@ __metadata:
     node-cron: 3.0.0
     node-fetch: 2.6.6
     nodemon: 2.0.15
-    npm-run-all: ^4.1.5
+    npm-run-all: "*"
     passport: 0.5.0
     passport-azure-ad: 4.3.1
     passport-jwt: 4.0.0
@@ -4556,7 +4556,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"esbuild@npm:^0.14.38":
+"esbuild@npm:*, esbuild@npm:^0.14.38":
   version: 0.14.38
   resolution: "esbuild@npm:0.14.38"
   dependencies:
@@ -6580,6 +6580,7 @@ __metadata:
   resolution: "lighthouse-dashboard@workspace:."
   dependencies:
     dotenv: 10.0.0
+    esbuild: ^0.14.38
     npm-run-all: 4.1.5
     typescript: 4.5.2
   languageName: unknown
@@ -7630,7 +7631,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"npm-run-all@npm:4.1.5, npm-run-all@npm:^4.1.5":
+"npm-run-all@npm:*, npm-run-all@npm:4.1.5":
   version: 4.1.5
   resolution: "npm-run-all@npm:4.1.5"
   dependencies:
