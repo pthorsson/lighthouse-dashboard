@@ -1,12 +1,12 @@
 import React, { useContext, memo } from 'react';
 import styled, { css, ThemeContext } from 'styled-components';
 import { lighten, darken } from 'polished';
-import { timestampToDate } from '@lib/utils';
-import { useLighthouse } from '@hooks';
-import Spinner from '@ui/spinner';
-import { perc, getLighthouseGradedColor } from './page-group.utils';
-import { PageGroupLayout } from './page-group';
-import PageGroupItemControls from './page-group-item-controls';
+import { timestampToDate } from '../../lib/utils.js';
+import { useLighthouse } from '../../hooks/index.js';
+import Spinner from '../../ui/spinner.js';
+import { perc, getLighthouseGradedColor } from './page-group.utils.js';
+import { PageGroupLayout } from './page-group.js';
+import PageGroupItemControls from './page-group-item-controls.js';
 
 type Props = {
   layout: PageGroupLayout;

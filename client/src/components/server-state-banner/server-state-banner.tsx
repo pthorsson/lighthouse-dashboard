@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import styled from 'styled-components';
-import { useAppState, SERVER_STATE } from '@hooks';
-import Spinner from '@ui/spinner';
+import { useAppState, SERVER_STATE } from '../../hooks/index.js';
+import Spinner from '../../ui/spinner.js';
 
 const ServerStateBanner: React.FC = () => {
   const { serverState } = useAppState();

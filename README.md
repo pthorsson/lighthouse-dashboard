@@ -32,7 +32,7 @@ Requirements and instructions for installing and running the application in deve
 ### Dependencies
 
 - [Yarn](https://yarnpkg.com/) >= 1.22
-- [Node](https://nodejs.org/en/) >= 10
+- [Node](https://nodejs.org/en/) >= 16
 - [MongoDB](https://www.mongodb.com/)
 - [Google Chrome](https://www.google.com/chrome/) (Headless)
 - [Azure AD](https://azure.microsoft.com/en-us/services/active-directory/)

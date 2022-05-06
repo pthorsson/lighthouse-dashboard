@@ -1,25 +1,27 @@
-import './register-module-alias';
+import { createServer } from 'node:http';
+import express from 'express';
+import bodyParser from 'body-parser';
+import socketIo from 'socket.io';
+import { PORT, APP_STATIC_DIR, BUILD_DIR } from './config.js';
+import devHotReload from './dev-hot-reload.js';
+import { mongoose } from './db.js';
+import {
+  ensureUserRole,
+  setCurrentUser,
+  USER_ROLES,
+} from './middleware/index.js';
+import * as lighthouse from './lib/lighthouse/index.js';
+import * as serverState from './lib/server-state.js';
 
-import * as express from 'express';
-import * as bodyParser from 'body-parser';
-import { createServer } from 'http';
-import { PORT, APP_STATIC_DIR, BUILD_DIR } from '@config';
-import * as socketIo from 'socket.io';
-import devHotReload from './dev-hot-reload';
-import * as lighthouse from '@lib/lighthouse';
-import { mongoose } from '@db';
-import { ensureUserRole, setCurrentUser, USER_ROLES } from '@middleware';
-import * as serverState from '@lib/server-state';
+import * as userController from './controllers/admin/user.controller.js';
+import * as infoController from './controllers/admin/info.controller.js';
+import * as sectionController from './controllers/admin/section.controller.js';
+import * as pageGroupController from './controllers/admin/page-group.controller.js';
+import * as pageController from './controllers/admin/page.controller.js';
+import * as actionsController from './controllers/actions.controller.js';
+import * as publicController from './controllers/public.controller.js';
 
-import * as userController from '@controllers/admin/user.controller';
-import * as infoController from '@controllers/admin/info.controller';
-import * as sectionController from '@controllers/admin/section.controller';
-import * as pageGroupController from '@controllers/admin/page-group.controller';
-import * as pageController from '@controllers/admin/page.controller';
-import * as actionsController from '@controllers/actions.controller';
-import * as publicController from '@controllers/public.controller';
-
-import { errorHandler } from '@middleware';
+import { errorHandler } from './middleware/index.js';
 
 const app = express();
 const server = createServer(app);

@@ -1,8 +1,13 @@
 import React from 'react';
 import styled from 'styled-components';
-import { Button } from '@ui/buttons';
-import { TextInput, FormSection, InputLabel } from '@ui/inputs';
-import { useApi, API_STATE, useObjectState, USER_ROLES } from '@hooks';
+import { Button } from '../../ui/buttons.js';
+import { TextInput, FormSection, InputLabel } from '../../ui/inputs.js';
+import {
+  useApi,
+  API_STATE,
+  useObjectState,
+  USER_ROLES,
+} from '../../hooks/index.js';
 
 type UpdateUserPayload = {
   email: string;

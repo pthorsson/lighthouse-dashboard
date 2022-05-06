@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+    <title>Lighthouse Dashboard</title>
+    <link rel="icon" href="/static/favicon-32.png" sizes="32x32" />
+    <link rel="icon" href="/static/favicon-57.png" sizes="57x57" />
+    <link rel="icon" href="/static/favicon-76.png" sizes="76x76" />
+    <link rel="icon" href="/static/favicon-96.png" sizes="96x96" />
+    <link rel="icon" href="/static/favicon-128.png" sizes="128x128" />
+    <link rel="icon" href="/static/favicon-192.png" sizes="192x192" />
+    <link rel="icon" href="/static/favicon-228.png" sizes="228x228" />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,100;0,300;0,400;0,500;0,700;0,900;1,100;1,300;1,400;1,500;1,700;1,900&display=swap"
+      rel="stylesheet"
+    />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Roboto+Mono:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;1,100;1,200;1,300;1,400;1,500;1,600;1,700&display=swap"
+      rel="stylesheet"
+    />
+    <style>
+      *,
+      *:before,
+      *:after {
+        box-sizing: border-box;
+      }
+
+      html,
+      body,
+      #app-root {
+        height: 100%;
+        padding: 0;
+        margin: 0;
+      }
+
+      body {
+        background-color: #212121;
+        color: #f5f5f5;
+        font-family: 'Roboto', sans-serif;
+      }
+
+      a,
+      a:visited {
+        color: #f5f5f5;
+        text-decoration: none;
+      }
+
+      a:hover {
+        text-decoration: underline;
+      }
+    </style>
+  </head>
+
+  <body>
+    <div id="app-root"></div>
+    %%LHD_DATA%%
+    <script src="/static/script.js"></script>
+  </body>
+</html>

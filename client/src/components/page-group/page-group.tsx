@@ -1,8 +1,8 @@
 import React from 'react';
 import styled from 'styled-components';
-import { useCurrentUser, USER_ROLES } from '@hooks';
-import PageGroupHeader from './page-group-header';
-import PageGroupItem from './page-group-item';
+import { useCurrentUser, USER_ROLES } from '../../hooks/index.js';
+import PageGroupHeader from './page-group-header.js';
+import PageGroupItem from './page-group-item.js';
 
 export type PageGroupLayout = 'user' | 'viewer' | 'display';
 

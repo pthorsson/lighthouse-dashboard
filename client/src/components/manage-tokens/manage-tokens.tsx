@@ -1,10 +1,15 @@
 import React, { useState } from 'react';
 import styled from 'styled-components';
-import { useApi, API_STATE, USER_ROLES, useCurrentUser } from '@hooks';
-import Modal, { ModalHeader, ModalSection } from '@ui/modal';
-import { copyToClipboard } from '@lib/utils';
-import { Button } from '@ui/buttons';
-import RoleBadge from '@ui/role-badge';
+import {
+  useApi,
+  API_STATE,
+  USER_ROLES,
+  useCurrentUser,
+} from '../../hooks/index.js';
+import Modal, { ModalHeader, ModalSection } from '../../ui/modal/index.js';
+import { copyToClipboard } from '../../lib/utils.js';
+import { Button } from '../../ui/buttons.js';
+import RoleBadge from '../../ui/role-badge.js';
 
 const ManageTokens: React.FC = () => {
   const currentUser = useCurrentUser();
@@ -58,7 +63,7 @@ const ManageTokens: React.FC = () => {
       </Description>
       <ModalSection sectionTitle="Existing tokens">
         {getTokens.data?.length ? (
-          getTokens.data.map(token => (
+          getTokens.data.map((token) => (
             <TokenWrapper key={token._id}>
               <TokenToken>{truncateToken(token.token)}</TokenToken>
               <TokenRole>
@@ -92,7 +97,7 @@ const ManageTokens: React.FC = () => {
         ) : null}
       </ModalSection>
       <ModalSection sectionTitle="Add new token">
-        {tokenRoles.map(tokenRole => (
+        {tokenRoles.map((tokenRole) => (
           <RadioButtonWrapper key={tokenRole.role}>
             <RadioButton
               type="radio"

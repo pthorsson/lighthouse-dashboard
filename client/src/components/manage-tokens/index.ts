@@ -1,1 +1,1 @@
-export { default } from './manage-tokens';
+export { default } from './manage-tokens.js';

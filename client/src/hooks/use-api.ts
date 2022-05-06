@@ -1,7 +1,7 @@
 import { useEffect, useCallback } from 'react';
-import { wait } from '@lib/utils';
-import { apiFetch } from '@lib/adal';
-import { useObjectState } from './use-object-state';
+import { wait } from '../lib/utils.js';
+import { apiFetch } from '../lib/adal.js';
+import { useObjectState } from './use-object-state.js';
 
 type ApiResponse<T> = {
   data: T;
@@ -60,7 +60,7 @@ export const useApi = <T>(
 
   const exec: ApiExecute = useCallback(
     ({ payload, params = {} } = {}) =>
-      new Promise<void>(resolve => {
+      new Promise<void>((resolve) => {
         setState({
           requestState: API_STATE.FETCHING,
           error: null,

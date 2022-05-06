@@ -1,6 +1,6 @@
 import React from 'react';
 import styled from 'styled-components';
-import { USER_ROLES } from '@hooks';
+import { USER_ROLES } from '../hooks/index.js';
 
 type Role = 'none' | 'viewer' | 'user' | 'admin' | 'super admin';
 

@@ -1,8 +1,12 @@
 import React from 'react';
-import styled from 'styled-components';
-import { useApi, useLighthouse, useAppState, SERVER_STATE } from '@hooks';
-import { Button } from '@ui/buttons';
-import Icon from '@ui/icon';
+import {
+  useApi,
+  useLighthouse,
+  useAppState,
+  SERVER_STATE,
+} from '../../hooks/index.js';
+import { Button } from '../../ui/buttons.js';
+import Icon from '../../ui/icon.js';
 
 const Actions: React.FC = () => {
   const { section, state } = useLighthouse();

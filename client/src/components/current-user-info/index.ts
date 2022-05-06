@@ -1,1 +1,1 @@
-export { default } from './current-user-info';
+export { default } from './current-user-info.js';

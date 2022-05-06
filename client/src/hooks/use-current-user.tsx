@@ -1,5 +1,5 @@
 import React, { useContext } from 'react';
-import { apiFetch } from '@lib/adal';
+import { apiFetch } from '../lib/adal.js';
 
 export enum USER_ROLES {
   NONE,

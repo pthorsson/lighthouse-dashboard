@@ -1,9 +1,9 @@
-import { Document, Schema } from 'mongoose';
-import { mongoose } from '@db';
-import { setDates, incrementVersion } from '@models/middleware';
-import PageGroup from '@models/page-group.model';
+import { setDates, incrementVersion } from '../models/middleware/index.js';
+import { mongoose } from '../db.js';
 
-interface ISection extends Document {
+import PageGroup from '../models/page-group.model.js';
+
+interface ISection extends mongoose.Document {
   name: string;
   slug: string;
   weekSchedule: number[];
@@ -12,7 +12,7 @@ interface ISection extends Document {
 }
 
 // Creating schema
-const SectionSchema = new Schema(
+const SectionSchema: mongoose.Schema = new mongoose.Schema(
   {
     name: {
       type: String,

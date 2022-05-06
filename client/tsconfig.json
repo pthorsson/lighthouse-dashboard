@@ -12,16 +12,6 @@
     "moduleResolution": "node",
     "allowSyntheticDefaultImports": true,
     "types": ["node"],
-    "paths": {
-      "*": ["node_modules/*"],
-      "@theme": ["./theme.ts"],
-      "@hooks": ["./hooks/index.ts"],
-      "@hooks/*": ["./hooks/*"],
-      "@lib/*": ["./lib/*"],
-      "@pages/*": ["./pages/*"],
-      "@components/*": ["./components/*"],
-      "@ui/*": ["./ui/*"],
-    },
     "typeRoots": [
       "./node_modules/@types",
       "../node_modules/@types",

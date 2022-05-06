@@ -1,9 +1,9 @@
 import React, { useState, useCallback, useEffect } from 'react';
 import styled from 'styled-components';
 import { useHistory } from 'react-router-dom';
-import { Button } from '@ui/buttons';
-import { TextInput, InputLabel, FormSection } from '@ui/inputs';
-import { useApi, API_STATE } from '@hooks';
+import { Button } from '../../ui/buttons.js';
+import { TextInput, InputLabel, FormSection } from '../../ui/inputs.js';
+import { useApi, API_STATE } from '../../hooks/index.js';
 
 type Props = {
   section: Lhd.Section;
@@ -36,7 +36,7 @@ const DeleteSection: React.FC<Props> = ({ section }) => {
         <TextInput
           type="text"
           placeholder={section.slug}
-          onChange={e => setSectionSlug(e.target.value)}
+          onChange={(e) => setSectionSlug(e.target.value)}
           value={sectionSlug}
           disabled={deleteSection.state === API_STATE.FETCHING}
         />

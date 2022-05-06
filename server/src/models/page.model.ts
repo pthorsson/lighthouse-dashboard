@@ -1,12 +1,12 @@
-import { Document, Schema } from 'mongoose';
-import { RequestError } from '@lib/RequestError';
-import { mongoose } from '@db';
-import { setDates, incrementVersion } from '@models/middleware';
-import PageGroup from '@models/page-group.model';
-import Audit from '@models/audit.model';
-import { URL } from 'url';
+import { URL } from 'node:url';
+import { setDates, incrementVersion } from '../models/middleware/index.js';
+import { RequestError } from '../lib/RequestError.js';
+import { mongoose } from '../db.js';
 
-interface IPage extends Document {
+import Audit from '../models/audit.model.js';
+import PageGroup from '../models/page-group.model.js';
+
+interface IPage extends mongoose.Document {
   url: string;
   pageGroup: mongoose.Types.ObjectId;
   createdAt?: Date;
@@ -14,7 +14,7 @@ interface IPage extends Document {
 }
 
 // Creating schema
-const PageSchema: Schema = new mongoose.Schema(
+const PageSchema: mongoose.Schema = new mongoose.Schema(
   {
     url: {
       type: String,

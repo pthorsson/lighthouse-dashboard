@@ -1,8 +1,7 @@
-import { Document, Schema } from 'mongoose';
-import { mongoose } from '@db';
-import { setDates, incrementVersion } from '@models/middleware';
+import { setDates, incrementVersion } from '../models/middleware/index.js';
+import { mongoose } from '../db.js';
 
-interface IUser extends Document {
+interface IUser extends mongoose.Document {
   email?: string;
   role?: number;
   createdAt?: Date;
@@ -10,7 +9,7 @@ interface IUser extends Document {
 }
 
 // Creating schema
-const UserSchema = new Schema(
+const UserSchema: mongoose.Schema = new mongoose.Schema(
   {
     email: {
       type: String,

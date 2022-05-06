@@ -1,9 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import styled from 'styled-components';
-import { Button } from '@ui/buttons';
-import { useModal } from '@ui/modal';
-import { TextInput, InputLabel, FormSection } from '@ui/inputs';
-import { useApi, API_STATE } from '@hooks';
+import { Button } from '../../ui/buttons.js';
+import { useModal } from '../../ui/modal/index.js';
+import { TextInput, InputLabel, FormSection } from '../../ui/inputs.js';
+import { useApi, API_STATE } from '../../hooks/index.js';
 
 type Props = {
   pageGroup: Lhd.PageGroup;
@@ -36,7 +36,7 @@ const DeleteSection: React.FC<Props> = ({ pageGroup }) => {
         <TextInput
           type="text"
           placeholder={pageGroup.name}
-          onChange={e => setPageGroupName(e.target.value)}
+          onChange={(e) => setPageGroupName(e.target.value)}
           value={pageGroupName}
           disabled={deletePageGroup.state === API_STATE.FETCHING}
         />

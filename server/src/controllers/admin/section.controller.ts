@@ -1,7 +1,7 @@
 import { RequestHandler } from 'express';
-import Section from '@models/section.model';
+import Section from '../../models/section.model.js';
 
-import * as lighthouse from '@lib/lighthouse';
+import * as lighthouse from '../../lib/lighthouse/index.js';
 
 export const getAll: RequestHandler[] = [
   async (req, res, next) => {

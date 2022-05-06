@@ -1,4 +1,4 @@
-import * as LRU from 'lru-cache';
+import LRU from 'lru-cache';
 
 const CACHE_AGE_HOURS = 6;
 

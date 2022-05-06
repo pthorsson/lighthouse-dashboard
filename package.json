@@ -1,7 +1,9 @@
 {
   "name": "lighthouse-dashboard",
-  "version": "1.2.2",
+  "version": "2.0.0",
   "private": true,
+  "type": "module",
+  "packageManager": "yarn@3.2.0",
   "workspaces": [
     "server",
     "client"
@@ -16,10 +18,11 @@
     "build:client": "yarn workspace @lhd/client build",
     "nuke": "yarn cache clean --all && rm -rf node_modules server/node_modules client/node_modules yarn.lock"
   },
-  "dependencies": {
+  "devDependencies": {
     "dotenv": "10.0.0",
+    "esbuild": "0.14.38",
     "npm-run-all": "4.1.5",
+    "rimraf": "3.0.2",
     "typescript": "4.5.2"
-  },
-  "packageManager": "yarn@3.2.0"
+  }
 }

@@ -1,9 +1,9 @@
 import React from 'react';
 import styled from 'styled-components';
-import { useApi, API_STATE, useCurrentUser } from '@hooks';
-import { Button } from '@ui/buttons';
-import Icon from '@ui/icon';
-import RoleBadge from '@ui/role-badge';
+import { useApi, API_STATE, useCurrentUser } from '../../hooks/index.js';
+import { Button } from '../../ui/buttons.js';
+import Icon from '../../ui/icon.js';
+import RoleBadge from '../../ui/role-badge.js';
 
 type Props = {
   users: Lhd.User[];
@@ -20,7 +20,7 @@ const ExistingUsers: React.FC<Props> = ({ users, selectUser }) => {
 
   return users?.length ? (
     <>
-      {users.map(user => (
+      {users.map((user) => (
         <UserWrapper key={user._id}>
           <UserEmail>{user.email}</UserEmail>
           <UserRole>

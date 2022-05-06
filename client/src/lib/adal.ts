@@ -1,13 +1,14 @@
 import { AuthenticationContext, adalFetch } from 'react-adal';
-import { getUrlQuery } from './utils';
+import { getUrlQuery } from './utils.js';
+import { AUTH_AD_CLIENT_ID, AUTH_AD_TENANT_ID } from '../config.js';
 
 const { token } = getUrlQuery();
 
 const adalConfig = {
-  clientId: process.env.AUTH_AD_CLIENT_ID as string,
-  tenant: process.env.AUTH_AD_TENANT_ID as string,
+  clientId: AUTH_AD_CLIENT_ID,
+  tenant: AUTH_AD_TENANT_ID,
   endpoints: {
-    api: process.env.AUTH_AD_CLIENT_ID,
+    api: AUTH_AD_CLIENT_ID,
   },
   redirectUri: window.location.origin,
 };

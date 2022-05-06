@@ -1,1 +1,1 @@
-export { default } from './page-group';
+export { default } from './page-group.js';

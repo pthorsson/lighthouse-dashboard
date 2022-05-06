@@ -1,7 +1,7 @@
 import React from 'react';
-import { Button } from '@ui/buttons';
-import { TextInput, FormSection } from '@ui/inputs';
-import { useApi, API_STATE, useObjectState } from '@hooks';
+import { Button } from '../../ui/buttons.js';
+import { TextInput, FormSection } from '../../ui/inputs.js';
+import { useApi, API_STATE, useObjectState } from '../../hooks/index.js';
 
 type UpdatePageGroupPayload = {
   namePrefix: string;
@@ -30,7 +30,7 @@ const PageGroupSettings: React.FC<Props> = ({ pageGroup }) => {
         <TextInput
           type="text"
           placeholder="Name prefix"
-          onChange={e => setForm({ namePrefix: e.target.value })}
+          onChange={(e) => setForm({ namePrefix: e.target.value })}
           value={form.namePrefix}
           disabled={updatePageGroup.state === API_STATE.FETCHING}
         />
@@ -40,7 +40,7 @@ const PageGroupSettings: React.FC<Props> = ({ pageGroup }) => {
         <TextInput
           type="text"
           placeholder="Name"
-          onChange={e => setForm({ name: e.target.value })}
+          onChange={(e) => setForm({ name: e.target.value })}
           value={form.name}
           disabled={updatePageGroup.state === API_STATE.FETCHING}
         />
@@ -50,7 +50,7 @@ const PageGroupSettings: React.FC<Props> = ({ pageGroup }) => {
         <TextInput
           type="text"
           placeholder="Name suffix"
-          onChange={e => setForm({ nameSuffix: e.target.value })}
+          onChange={(e) => setForm({ nameSuffix: e.target.value })}
           value={form.nameSuffix}
           disabled={updatePageGroup.state === API_STATE.FETCHING}
         />

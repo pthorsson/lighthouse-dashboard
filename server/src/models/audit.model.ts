@@ -1,12 +1,12 @@
-import { Document, Schema } from 'mongoose';
-import { RequestError } from '@lib/RequestError';
-import { mongoose } from '@db';
-import * as reportCache from '@lib/report-cache';
-import { setDates, incrementVersion } from '@models/middleware';
-import Page from '@models/page.model';
-import Report from '@models/report.model';
+import * as reportCache from '../lib/report-cache.js';
+import { setDates, incrementVersion } from '../models/middleware/index.js';
+import { RequestError } from '../lib/RequestError.js';
+import { mongoose } from '../db.js';
 
-interface IAudit extends Document {
+import Page from '../models/page.model.js';
+import Report from '../models/report.model.js';
+
+interface IAudit extends mongoose.Document {
   timestamp: number;
   duration: number;
   performance: number;
@@ -19,7 +19,7 @@ interface IAudit extends Document {
 }
 
 // Creating schema
-const AuditSchema: Schema = new mongoose.Schema(
+const AuditSchema: mongoose.Schema = new mongoose.Schema(
   {
     timestamp: Number,
     duration: Number,

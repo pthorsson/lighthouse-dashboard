@@ -1,10 +1,10 @@
 import React, { useEffect, useRef } from 'react';
 import styled from 'styled-components';
-import { useObjectState, useApi, API_STATE } from '@hooks';
-import Modal, { useModal } from '@ui/modal';
-import { Button } from '@ui/buttons';
-import { TextInput, InputLabel, FormSection } from '@ui/inputs';
 import kebabCase from 'lodash/kebabCase';
+import { useObjectState, useApi, API_STATE } from '../../hooks/index.js';
+import Modal, { useModal } from '../../ui/modal/index.js';
+import { Button } from '../../ui/buttons.js';
+import { TextInput, InputLabel, FormSection } from '../../ui/inputs.js';
 
 type Props = {
   onComplete: () => void;
@@ -75,7 +75,7 @@ const CreateSection: React.FC<Props> = ({ onComplete = () => {} }) => {
           id="section-name"
           type="text"
           value={form.name}
-          onChange={e => setForm({ name: e.target.value })}
+          onChange={(e) => setForm({ name: e.target.value })}
           placeholder="My awesome section"
           disabled={createSection.state === API_STATE.FETCHING}
           ref={sectionNameInput}
@@ -87,7 +87,7 @@ const CreateSection: React.FC<Props> = ({ onComplete = () => {} }) => {
           id="section-slug"
           type="text"
           value={form.slug}
-          onChange={e => setForm({ slug: e.target.value })}
+          onChange={(e) => setForm({ slug: e.target.value })}
           placeholder="my-awesome-section"
           disabled={createSection.state === API_STATE.FETCHING}
         />

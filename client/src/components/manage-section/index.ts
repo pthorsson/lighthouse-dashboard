@@ -1,1 +1,1 @@
-export { default } from './manage-section';
+export { default } from './manage-section.js';

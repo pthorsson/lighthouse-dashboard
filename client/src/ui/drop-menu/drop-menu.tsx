@@ -2,8 +2,8 @@ import React, { useCallback } from 'react';
 import { lighten } from 'polished';
 import { Link } from 'react-router-dom';
 import styled, { css } from 'styled-components';
-import { useDropMenu, useDropMenus } from '@ui/drop-menu';
 import { Transition } from 'react-transition-group';
+import { useDropMenu, useDropMenus } from './drop-menu-provider.js';
 
 type Props = {
   id: string;
@@ -133,7 +133,7 @@ export const DropDownItem: React.FC<DropDownItemProps> = ({
 }) => {
   const { close } = useDropMenus();
 
-  const clickHandler = useCallback(event => {
+  const clickHandler = useCallback((event) => {
     onClick(event);
     closeOnClick && close();
   }, []);

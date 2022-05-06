@@ -1,3 +1,3 @@
-export { default } from './modal';
-export { useModal, ModalProvider } from './modal-provider';
-export { ModalHeader, ModalSubHeader, ModalSection } from './elements';
+export { default } from './modal.js';
+export { useModal, ModalProvider } from './modal-provider.js';
+export { ModalHeader, ModalSubHeader, ModalSection } from './elements.js';

@@ -1,10 +1,15 @@
 import React from 'react';
 import styled from 'styled-components';
 import { lighten } from 'polished';
-import { Button } from '@ui/buttons';
-import { TextInput, InputLabel, FormSection } from '@ui/inputs';
-import Icon from '@ui/icon';
-import { useLighthouse, useApi, API_STATE, useObjectState } from '@hooks';
+import { Button } from '../../ui/buttons.js';
+import { TextInput, InputLabel, FormSection } from '../../ui/inputs.js';
+import Icon from '../../ui/icon.js';
+import {
+  useLighthouse,
+  useApi,
+  API_STATE,
+  useObjectState,
+} from '../../hooks/index.js';
 
 type CreatePageGroupPayload = {
   namePrefix: string;
@@ -40,7 +45,7 @@ const ManagePageGroups: React.FC<Props> = ({ pageGroups, selectPageGroup }) => {
 
   return (
     <>
-      {pageGroups.map(pageGroup => (
+      {pageGroups.map((pageGroup) => (
         <PageGroupWrapper
           key={pageGroup._id}
           onClick={() => selectPageGroup(pageGroup._id)}
@@ -73,7 +78,7 @@ const ManagePageGroups: React.FC<Props> = ({ pageGroups, selectPageGroup }) => {
             variant="small"
             type="text"
             placeholder="Prefix"
-            onChange={e => setForm({ namePrefix: e.target.value })}
+            onChange={(e) => setForm({ namePrefix: e.target.value })}
             value={form.namePrefix}
             disabled={createPageGroup.state === API_STATE.FETCHING}
           />
@@ -81,7 +86,7 @@ const ManagePageGroups: React.FC<Props> = ({ pageGroups, selectPageGroup }) => {
             variant="small"
             type="text"
             placeholder="Name (required)"
-            onChange={e => setForm({ name: e.target.value })}
+            onChange={(e) => setForm({ name: e.target.value })}
             value={form.name}
             disabled={createPageGroup.state === API_STATE.FETCHING}
           />
@@ -89,7 +94,7 @@ const ManagePageGroups: React.FC<Props> = ({ pageGroups, selectPageGroup }) => {
             variant="small"
             type="text"
             placeholder="Suffix"
-            onChange={e => setForm({ nameSuffix: e.target.value })}
+            onChange={(e) => setForm({ nameSuffix: e.target.value })}
             value={form.nameSuffix}
             disabled={createPageGroup.state === API_STATE.FETCHING}
           />

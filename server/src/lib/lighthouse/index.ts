@@ -11,5 +11,5 @@ export {
   syncSections,
   syncSectionData,
   calibrate,
-} from './lighthouse';
-export { LIGHTHOUSE_HANDLER_STATES } from './LighthouseHandler';
+} from './lighthouse.js';
+export { LIGHTHOUSE_HANDLER_STATES } from './LighthouseHandler.js';

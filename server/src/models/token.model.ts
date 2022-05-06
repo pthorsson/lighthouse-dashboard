@@ -1,8 +1,7 @@
-import { Document, Schema } from 'mongoose';
-import { mongoose } from '@db';
-import { setDates, incrementVersion } from '@models/middleware';
+import { setDates, incrementVersion } from '../models/middleware/index.js';
+import { mongoose } from '../db.js';
 
-interface IToken extends Document {
+interface IToken extends mongoose.Document {
   token?: string;
   user?: string;
   role?: number;
@@ -11,7 +10,7 @@ interface IToken extends Document {
 }
 
 // Creating schema
-const TokenSchema = new Schema(
+const TokenSchema: mongoose.Schema = new mongoose.Schema(
   {
     token: String,
     user: mongoose.Types.ObjectId,

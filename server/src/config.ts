@@ -1,4 +1,7 @@
-import { join } from 'path';
+import { join, dirname } from 'node:path';
+import { fileURLToPath } from 'node:url';
+
+const __dirname = dirname(fileURLToPath(import.meta.url));
 
 export const VERBOSE_LIGHTHOUSE_LOGGING = /1|true/.test(
   process.env.VERBOSE_LIGHTHOUSE_LOGGING

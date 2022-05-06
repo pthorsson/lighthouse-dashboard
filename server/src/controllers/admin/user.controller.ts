@@ -1,8 +1,8 @@
 import { RequestHandler } from 'express';
-import { generateString } from '@lib/utils';
-import User from '@models/user.model';
-import Token from '@models/token.model';
-import { USER_ROLES } from '@middleware';
+import { generateString } from '../../lib/utils.js';
+import User from '../../models/user.model.js';
+import Token from '../../models/token.model.js';
+import { USER_ROLES } from '../../middleware/index.js';
 
 export const getAll: RequestHandler[] = [
   async (req, res, next) => {

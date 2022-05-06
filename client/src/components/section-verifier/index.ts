@@ -1,1 +1,1 @@
-export { default } from './section-verifier';
+export { default } from './section-verifier.js';

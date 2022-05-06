@@ -1,11 +1,11 @@
 import React from 'react';
 import styled, { ThemeProvider } from 'styled-components';
 import { Link } from 'react-router-dom';
-import PageGroup from '@components/page-group';
-import Navigation from '@components/navigation';
-import ServerStateBanner from '@components/server-state-banner';
-import { useLighthouse, useAppState } from '@hooks';
-import { getUrlQuery } from '@lib/utils';
+import PageGroup from '../components/page-group/index.js';
+import Navigation from '../components/navigation/index.js';
+import ServerStateBanner from '../components/server-state-banner/index.js';
+import { useLighthouse, useAppState } from '../hooks/index.js';
+import { getUrlQuery } from '../lib/utils.js';
 
 const Dashboard = () => {
   const { data, section } = useLighthouse();
