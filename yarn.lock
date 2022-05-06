@@ -2148,7 +2148,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"esbuild@npm:*, esbuild@npm:^0.14.38":
+"esbuild@npm:*, esbuild@npm:0.14.38":
   version: 0.14.38
   resolution: "esbuild@npm:0.14.38"
   dependencies:
@@ -3392,9 +3392,9 @@ __metadata:
   resolution: "lighthouse-dashboard@workspace:."
   dependencies:
     dotenv: 10.0.0
-    esbuild: ^0.14.38
+    esbuild: 0.14.38
     npm-run-all: 4.1.5
-    rimraf: ^3.0.2
+    rimraf: 3.0.2
     typescript: 4.5.2
   languageName: unknown
   linkType: soft
@@ -4989,7 +4989,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"rimraf@npm:*, rimraf@npm:^3.0.2":
+"rimraf@npm:*, rimraf@npm:3.0.2, rimraf@npm:^3.0.2":
   version: 3.0.2
   resolution: "rimraf@npm:3.0.2"
   dependencies:
