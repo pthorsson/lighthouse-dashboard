@@ -4,9 +4,9 @@
   "private": true,
   "type": "module",
   "scripts": {
-    "dev": "yarn cleanup && run-p 'dev:*'",
+    "dev": "yarn cleanup && yarn build && run-p 'dev:*'",
     "dev:esbuild": "yarn esbuild --watch --define:process.env.NODE_ENV=\\\"development\\\"",
-    "dev:nodemon": "nodemon --exec \"node -r dotenv/config\" ../.build/server/server.js --watch ../.build/server --inspect --delay 2 dotenv_config_path=../.env",
+    "dev:nodemon": "nodemon --exec \"node -r dotenv/config\" ../.build/server/server.js --watch ../.build/server --inspect --delay 1 dotenv_config_path=../.env",
     "build": "yarn cleanup && yarn esbuild --define:process.env.NODE_ENV=\\\"production\\\"",
     "cleanup": "rimraf ../.build/server",
     "esbuild": "esbuild src/**/*.ts --format=esm --platform=node --outdir=../.build/server"
@@ -46,7 +46,7 @@
     "esbuild": "*",
     "nodemon": "2.0.15",
     "npm-run-all": "*",
-    "rimraf": "^3.0.2",
+    "rimraf": "*",
     "typescript": "*"
   }
 }

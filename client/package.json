@@ -3,10 +3,23 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "build": "rm -rf ../.build/client && webpack --env.production",
-    "dev": "rm -rf ../.build/client && webpack"
+    "_build": "rm -rf ../.build/client && webpack --env.production",
+    "_dev": "rm -rf ../.build/client && webpack",
+    "dev": "yarn cleanup && run-p 'dev:*'",
+    "dev:esbuild": "yarn esbuild --minify-syntax --watch --sourcemap --define:process.env.NODE_ENV=\\\"development\\\"",
+    "dev:copy-static-files": "chokidar \"./static/**/*\" --debounce 50 --initial --silent --command \"yarn copy-static-files\"",
+    "dev:copy-index-file": "chokidar \"./src/index.html\" --debounce 50 --initial --silent --command \"yarn copy-index-file\"",
+    "build": "yarn cleanup && run-p 'build:*'",
+    "build:esbuild": "yarn esbuild --minify --sourcemap --define:process.env.NODE_ENV=\\\"production\\\"",
+    "build:copy-static-files": "yarn copy-static-files",
+    "build:copy-index-file": "yarn copy-index-file",
+    "cleanup": "rimraf ../.build/client",
+    "copy-static-files": "copyfiles --all --up 1 \"./static/**/*\" ../.build/client/static",
+    "copy-index-file": "copyfiles --all --up 1 \"./src/index.html\" ../.build/client",
+    "esbuild": "esbuild src/index.tsx --format=esm --bundle --target=chrome85 --outfile=../.build/client/static/script.js"
   },
   "dependencies": {
+    "chokidar-cli": "3.0.0",
     "lodash": "4.17.21",
     "polished": "3.7.2",
     "react": "16.14.0",
@@ -20,9 +33,6 @@
     "styled-components": "5.3.3"
   },
   "devDependencies": {
-    "@babel/core": "7.16.0",
-    "@babel/preset-env": "7.16.4",
-    "@babel/preset-react": "7.16.0",
     "@types/lodash": "4.14.177",
     "@types/react": "16.14.21",
     "@types/react-adal": "0.5.2",
@@ -33,16 +43,10 @@
     "@types/socket.io": "2.1.13",
     "@types/socket.io-client": "1.4.36",
     "@types/styled-components": "5.1.15",
-    "babel-loader": "8.2.3",
-    "babel-plugin-styled-components": "1.13.3",
-    "copy-webpack-plugin": "6.4.1",
-    "dotenv-webpack": "3.0.0",
-    "html-loader": "1.3.2",
-    "html-webpack-plugin": "4.5.2",
-    "ts-loader": "8.3.0",
-    "tsconfig-paths-webpack-plugin": "3.5.2",
-    "typescript": "*",
-    "webpack": "4.46.0",
-    "webpack-cli": "3.3.12"
+    "copyfiles": "2.4.1",
+    "esbuild": "*",
+    "npm-run-all": "*",
+    "rimraf": "*",
+    "typescript": "*"
   }
 }
