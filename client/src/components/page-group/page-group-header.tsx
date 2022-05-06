@@ -1,7 +1,7 @@
 import React from 'react';
 import styled, { css } from 'styled-components';
-import Icon from '@ui/icon';
-import { PageGroupLayout } from './page-group';
+import Icon from '../../ui/icon.js';
+import { PageGroupLayout } from './page-group.js';
 
 type Props = {
   layout: PageGroupLayout;

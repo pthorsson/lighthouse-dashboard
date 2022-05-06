@@ -1,1 +1,1 @@
-export { default } from './create-section';
+export { default } from './create-section.js';

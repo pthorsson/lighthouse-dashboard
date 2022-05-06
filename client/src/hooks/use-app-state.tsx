@@ -1,5 +1,5 @@
 import React, { useState, useCallback, useContext, useEffect } from 'react';
-import * as socketIo from 'socket.io-client';
+import socketIo from 'socket.io-client';
 
 // This should be shared between client and server
 export enum SERVER_STATE {

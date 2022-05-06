@@ -1,10 +1,10 @@
 import React, { useState, useRef, useEffect } from 'react';
 import styled, { ThemeProvider } from 'styled-components';
 import throttle from 'lodash/throttle';
-import { defaultTheme } from '@theme';
-import PageGroup from '@components/page-group';
-import { useLighthouse } from '@hooks';
-import { getUrlQuery } from '@lib/utils';
+import { defaultTheme } from '../theme.js';
+import PageGroup from '../components/page-group/index.js';
+import { useLighthouse } from '../hooks/index.js';
+import { getUrlQuery } from '../lib/utils.js';
 
 const Display = () => {
   const { data } = useLighthouse();
@@ -18,7 +18,7 @@ const Display = () => {
         <Header1>Lighthouse scores</Header1>
         <Header2>{data.name}</Header2>
         <AutoScrollArea>
-          {data.pageGroups.map(pageGroup => (
+          {data.pageGroups.map((pageGroup) => (
             <PageGroup
               key={pageGroup._id}
               mode="display"

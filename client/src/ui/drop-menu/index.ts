@@ -3,9 +3,9 @@ export {
   DropDownTitle,
   DropDownItem,
   DropDownDivider,
-} from './drop-menu';
+} from './drop-menu.js';
 export {
   DropMenuProvider,
   useDropMenu,
   useDropMenus,
-} from './drop-menu-provider';
+} from './drop-menu-provider.js';

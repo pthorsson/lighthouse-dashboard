@@ -1,7 +1,7 @@
 import React from 'react';
 import styled, { css } from 'styled-components';
-import { useModal } from './modal-provider';
-import Icon from '@ui/icon';
+import { useModal } from './modal-provider.js';
+import Icon from '../icon.js';
 
 type Props = {
   id: string;

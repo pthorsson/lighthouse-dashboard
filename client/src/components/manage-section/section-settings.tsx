@@ -1,9 +1,9 @@
 import React from 'react';
 import styled from 'styled-components';
-import { Button } from '@ui/buttons';
-import { TextInput, InputLabel, FormSection } from '@ui/inputs';
-import { useApi, API_STATE, useObjectState } from '@hooks';
 import isEqual from 'lodash/isEqual';
+import { Button } from '../../ui/buttons.js';
+import { TextInput, InputLabel, FormSection } from '../../ui/inputs.js';
+import { useApi, API_STATE, useObjectState } from '../../hooks/index.js';
 
 type Props = {
   section: Lhd.Section;

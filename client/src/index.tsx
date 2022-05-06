@@ -1,6 +1,7 @@
 import { runWithAdal } from 'react-adal';
-import { authContext } from '@lib/adal';
-import { getUrlQuery } from '@lib/utils';
+import { authContext } from './lib/adal.js';
+import { getUrlQuery } from './lib/utils.js';
+import initApp from './app.js';
 
 const query = getUrlQuery();
 
@@ -8,10 +9,10 @@ if (!query['token']) {
   runWithAdal(
     authContext,
     () => {
-      require('./app');
+      initApp();
     },
     false
   );
 } else {
-  require('./app');
+  initApp();
 }

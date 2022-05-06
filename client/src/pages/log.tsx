@@ -1,8 +1,8 @@
 import React from 'react';
 import styled from 'styled-components';
 import { useParams } from 'react-router-dom';
-import ErrorScreen from '@components/error-screen';
-import { useApi, API_STATE } from '@hooks';
+import ErrorScreen from '../components/error-screen/index.js';
+import { useApi, API_STATE } from '../hooks/index.js';
 
 type Props = {
   type: 'calibration' | 'section';

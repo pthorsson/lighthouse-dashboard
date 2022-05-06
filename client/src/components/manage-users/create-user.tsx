@@ -1,8 +1,13 @@
 import React, { useEffect } from 'react';
 import styled from 'styled-components';
-import { useApi, API_STATE, USER_ROLES, useObjectState } from '@hooks';
-import { Button } from '@ui/buttons';
-import { FormSection, InputLabel, TextInput } from '@ui/inputs';
+import {
+  useApi,
+  API_STATE,
+  USER_ROLES,
+  useObjectState,
+} from '../../hooks/index.js';
+import { Button } from '../../ui/buttons.js';
+import { FormSection, InputLabel, TextInput } from '../../ui/inputs.js';
 
 const roleDescriptions: string[] = [];
 
@@ -50,13 +55,13 @@ const CreateUser: React.FC<Props> = ({ onChange }) => {
         <InputLabel>Email (case sensitive)</InputLabel>
         <TextInput
           value={newUserForm.email}
-          onChange={e => setNewUserForm({ email: e.target.value })}
+          onChange={(e) => setNewUserForm({ email: e.target.value })}
         />
       </FormSection>
       <FormSection>
         <InputLabel>Role</InputLabel>
         <RoleSelect
-          onChange={e => setNewUserForm({ role: e.target.value as any })}
+          onChange={(e) => setNewUserForm({ role: e.target.value as any })}
         >
           <RoleSelectOption value={2}>User</RoleSelectOption>
           <RoleSelectOption value={3}>Admin</RoleSelectOption>

@@ -1,9 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import styled from 'styled-components';
-import { Button } from '@ui/buttons';
-import { useModal } from '@ui/modal';
-import { TextInput, InputLabel, FormSection } from '@ui/inputs';
-import { useApi, API_STATE } from '@hooks';
+import { Button } from '../../ui/buttons.js';
+import { useModal } from '../../ui/modal/index.js';
+import { TextInput, InputLabel, FormSection } from '../../ui/inputs.js';
+import { useApi, API_STATE } from '../../hooks/index.js';
 
 type Props = {
   user: Lhd.User;
@@ -36,7 +36,7 @@ const DeleteUser: React.FC<Props> = ({ user, onChange }) => {
         <TextInput
           type="text"
           placeholder={user.email}
-          onChange={e => setUserEmail(e.target.value)}
+          onChange={(e) => setUserEmail(e.target.value)}
           value={userEmail}
           disabled={deleteUser.state === API_STATE.FETCHING}
         />

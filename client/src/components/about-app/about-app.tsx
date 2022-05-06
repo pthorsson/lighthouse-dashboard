@@ -1,7 +1,7 @@
 import React from 'react';
 import styled from 'styled-components';
-import { useApi } from '@hooks';
-import Modal, { ModalHeader, ModalSection } from '@ui/modal';
+import { useApi } from '../../hooks/index.js';
+import Modal, { ModalHeader, ModalSection } from '../../ui/modal/index.js';
 
 type AppInfoData = {
   dashboardVersion: string;

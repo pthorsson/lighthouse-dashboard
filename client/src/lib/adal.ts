@@ -1,5 +1,5 @@
 import { AuthenticationContext, adalFetch } from 'react-adal';
-import { getUrlQuery } from './utils';
+import { getUrlQuery } from './utils.js';
 
 const { token } = getUrlQuery();
 

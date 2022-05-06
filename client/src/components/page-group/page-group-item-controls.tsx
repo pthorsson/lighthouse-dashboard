@@ -1,6 +1,6 @@
 import React, { useMemo } from 'react';
-import styled, { css } from 'styled-components';
-import { timestampToDate } from '@lib/utils';
+import styled from 'styled-components';
+import { timestampToDate } from '../../lib/utils.js';
 import {
   useLighthouse,
   EnsureUserRole,
@@ -8,15 +8,15 @@ import {
   useApi,
   useAppState,
   SERVER_STATE,
-} from '@hooks';
+} from '../../hooks/index.js';
 import DropMenu, {
   DropDownItem,
   DropDownTitle,
   useDropMenu,
-} from '@ui/drop-menu';
-import Icon from '@ui/icon';
+} from '../../ui/drop-menu/index.js';
+import Icon from '../../ui/icon.js';
 
-import { Button, LinkButton } from '@ui/buttons';
+import { Button, LinkButton } from '../../ui/buttons.js';
 
 type Props = {
   id: string;

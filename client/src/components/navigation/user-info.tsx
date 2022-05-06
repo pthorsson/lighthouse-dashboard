@@ -1,7 +1,7 @@
 import React from 'react';
 import styled from 'styled-components';
-import { useCurrentUser } from '@hooks';
-import RoleBadge from '@ui/role-badge';
+import { useCurrentUser } from '../../hooks/index.js';
+import RoleBadge from '../../ui/role-badge.js';
 
 const UserInfo: React.FC = () => {
   const { email, role } = useCurrentUser();

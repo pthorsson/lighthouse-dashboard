@@ -1,24 +1,24 @@
 import React from 'react';
 import styled from 'styled-components';
-import { EnsureUserRole, USER_ROLES, useAppState } from '@hooks';
-import { Button } from '@ui/buttons';
-import { useModal } from '@ui/modal';
-import Checkbox from '@ui/checkbox';
+import { EnsureUserRole, USER_ROLES, useAppState } from '../../hooks/index.js';
+import { Button } from '../../ui/buttons.js';
+import { useModal } from '../../ui/modal/index.js';
+import Checkbox from '../../ui/checkbox.js';
 import DropMenu, {
   DropDownDivider,
   DropDownItem,
   DropDownTitle,
   useDropMenu,
-} from '@ui/drop-menu';
-import Icon from '@ui/icon';
-import ManageSection from '@components/manage-section';
-import ManageTokens from '@components/manage-tokens';
-import ManageUsers from '@components/manage-users';
-import AboutApp from '@components/about-app';
+} from '../../ui/drop-menu/index.js';
+import Icon from '../../ui/icon.js';
+import ManageSection from '../../components/manage-section/index.js';
+import ManageTokens from '../../components/manage-tokens/index.js';
+import ManageUsers from '../../components/manage-users/index.js';
+import AboutApp from '../../components/about-app/index.js';
 
-import UserInfo from './user-info';
-import Actions from './actions';
-import { getUrlQuery } from '@lib/utils';
+import UserInfo from './user-info.js';
+import Actions from './actions.js';
+import { getUrlQuery } from '../../lib/utils.js';
 
 type Props = {
   section?: string;

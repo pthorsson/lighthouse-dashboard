@@ -1,16 +1,16 @@
 import React, { useState, useEffect, useCallback } from 'react';
-import { API_STATE, useApi } from '@hooks';
+import { API_STATE, useApi } from '../../hooks/index.js';
 import Modal, {
   ModalHeader,
   ModalSection,
   ModalSubHeader,
   useModal,
-} from '@ui/modal';
+} from '../../ui/modal/index.js';
 
-import ExistingUsers from './existing-users';
-import CreateUser from './create-user';
-import UserSettings from './user-settings';
-import DeleteUser from './delete-user';
+import ExistingUsers from './existing-users.js';
+import CreateUser from './create-user.js';
+import UserSettings from './user-settings.js';
+import DeleteUser from './delete-user.js';
 
 const ManageUsers: React.FC = () => {
   const [selectedUser, setSelectedUser] = useState<Lhd.User>(null);
@@ -40,7 +40,7 @@ const ManageUsers: React.FC = () => {
         <ModalSection sectionTitle="Existing users">
           <ExistingUsers
             users={getUsers.data}
-            selectUser={user => {
+            selectUser={(user) => {
               editUserModal.toggle();
               selectUser(user._id);
             }}

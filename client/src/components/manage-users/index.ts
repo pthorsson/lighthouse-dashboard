@@ -1,1 +1,1 @@
-export { default } from './manage-users';
+export { default } from './manage-users.js';

@@ -1,11 +1,11 @@
 import React, { useEffect, useState } from 'react';
 import styled, { css } from 'styled-components';
 import { Link, useHistory } from 'react-router-dom';
-import { EnsureUserRole, useApi, USER_ROLES } from '@hooks';
-import CreateSection from '@components/create-section';
-import { useModal } from '@ui/modal';
-import { getUrlQuery } from '@lib/utils';
-import Navigation from '@components/navigation';
+import { EnsureUserRole, useApi, USER_ROLES } from '../hooks/index.js';
+import CreateSection from '../components/create-section';
+import { useModal } from '../ui/modal/index.js';
+import { getUrlQuery } from '../lib/utils.js';
+import Navigation from '../components/navigation/index.js';
 
 const LandingPage = () => {
   const createSectionModal = useModal('create-section-modal');

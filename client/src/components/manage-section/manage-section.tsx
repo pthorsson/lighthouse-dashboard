@@ -4,22 +4,22 @@ import Modal, {
   ModalHeader,
   ModalSubHeader,
   ModalSection,
-} from '@ui/modal';
-import { useLighthouse } from '@hooks';
+} from '../../ui/modal/index.js';
+import { useLighthouse } from '../../hooks/index.js';
 
-import SectionSettings from './section-settings';
-import DeleteSection from './delete-section';
-import DeletePageGroup from './delete-page-group';
-import PageGroupSettings from './page-group-settings';
-import ManagePageGroups from './manage-page-groups';
-import ManagePageGroupPages from './manage-page-group-pages';
+import SectionSettings from './section-settings.js';
+import DeleteSection from './delete-section.js';
+import DeletePageGroup from './delete-page-group.js';
+import PageGroupSettings from './page-group-settings.js';
+import ManagePageGroups from './manage-page-groups.js';
+import ManagePageGroupPages from './manage-page-group-pages.js';
 
 const ManageSection: React.FC = () => {
   const { data } = useLighthouse();
   const managePageGroupModal = useModal('manage-page-group-modal');
   const [selectedPageGroup, setSelectedPageGroup] = useState(null);
 
-  const pageGroup = data.pageGroups.find(pg => pg._id === selectedPageGroup);
+  const pageGroup = data.pageGroups.find((pg) => pg._id === selectedPageGroup);
 
   return (
     <>
@@ -32,7 +32,7 @@ const ManageSection: React.FC = () => {
         <ModalSection sectionTitle="Page groups">
           <ManagePageGroups
             pageGroups={data.pageGroups}
-            selectPageGroup={pageGroup => {
+            selectPageGroup={(pageGroup) => {
               managePageGroupModal.toggle();
               setSelectedPageGroup(pageGroup);
             }}

@@ -1,6 +1,6 @@
 import React, { useContext } from 'react';
-import * as socketIo from 'socket.io-client';
-import { deepCopy } from '@lib/utils';
+import socketIo from 'socket.io-client';
+import { deepCopy } from '../lib/utils.js';
 
 type LighthouseState = {
   active: string;

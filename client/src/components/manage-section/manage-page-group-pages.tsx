@@ -1,9 +1,9 @@
 import React, { useState } from 'react';
 import styled from 'styled-components';
-import { Button } from '@ui/buttons';
-import { TextInput, InputLabel, FormSection } from '@ui/inputs';
-import Icon from '@ui/icon';
-import { useApi, API_STATE, useObjectState } from '@hooks';
+import { Button } from '../../ui/buttons.js';
+import { TextInput, InputLabel, FormSection } from '../../ui/inputs.js';
+import Icon from '../../ui/icon.js';
+import { useApi, API_STATE, useObjectState } from '../../hooks/index.js';
 
 type CreatePagePayload = {
   url: string;
@@ -38,7 +38,7 @@ const ManagePageGroupPages: React.FC<Props> = ({ pageGroup }) => {
 
   return (
     <>
-      {pageGroup.pages.map(page => (
+      {pageGroup.pages.map((page) => (
         <PageWrapper key={page._id}>
           <PageUrl>{page.url}</PageUrl>
           {confirmedPageId === page._id ? (
@@ -99,7 +99,7 @@ const ManagePageGroupPages: React.FC<Props> = ({ pageGroup }) => {
             variant="small"
             type="text"
             placeholder="Example: https://www.google.com/"
-            onChange={e => setForm({ url: e.target.value })}
+            onChange={(e) => setForm({ url: e.target.value })}
             value={form.url}
             disabled={createPage.state === API_STATE.FETCHING}
           />
