@@ -3,8 +3,6 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "_build": "rm -rf ../.build/client && webpack --env.production",
-    "_dev": "rm -rf ../.build/client && webpack",
     "dev": "yarn cleanup && run-p 'dev:*'",
     "dev:esbuild": "yarn esbuild --minify-syntax --watch --sourcemap --define:process.env.NODE_ENV=\\\"development\\\"",
     "dev:copy-static-files": "chokidar \"./static/**/*\" --debounce 50 --initial --silent --command \"yarn copy-static-files\"",
