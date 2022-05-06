@@ -1,3 +1,4 @@
+import { readFile } from 'node:fs/promises';
 import { join } from 'node:path';
 import { RequestHandler } from 'express';
 import { APP_DIST_DIR } from '../config.js';
@@ -6,6 +7,9 @@ import * as lighthouse from '../lib/lighthouse/index.js';
 import * as reportCache from '../lib/report-cache.js';
 import Report from '../models/report.model.js';
 import { validateSection } from '../middleware/index.js';
+import { appendLhdData } from '../lib/append-lhd-data.js';
+
+let indexHtmlCache: string = null;
 
 /**
  * Get all section slugs
@@ -84,7 +88,17 @@ export const serveReport: RequestHandler[] = [
  */
 export const serveApp: RequestHandler[] = [
   (req, res) => {
-    res.sendFile(join(APP_DIST_DIR, 'index.html'));
+    res.setHeader('Content-Type', 'text/html');
+
+    if (indexHtmlCache) {
+      res.send(indexHtmlCache);
+    } else {
+      readFile(join(APP_DIST_DIR, 'index.html'), 'utf8').then((html) => {
+        indexHtmlCache = appendLhdData(html);
+
+        res.send(indexHtmlCache);
+      });
+    }
   },
 ];
 

@@ -4,6 +4,7 @@ import { createServer } from 'node:http';
 import socketIO from 'socket.io';
 import { Application } from 'express';
 import lodash from 'lodash';
+import { appendLhdData } from './lib/append-lhd-data.js';
 
 const { debounce } = lodash;
 
@@ -52,7 +53,7 @@ const devHotReload = (app: Application, options: Options) => {
   });
 
   // Files watcher handler
-  const watchHandler = debounce((event, path: string) => {
+  const watchHandler = debounce((_, path: string) => {
     if (path.startsWith(subDir)) {
       console.log('[dev-hot-reload] Sends reload request to client ...');
       io.sockets.emit('reload');
@@ -60,17 +61,18 @@ const devHotReload = (app: Application, options: Options) => {
   }, 200);
 
   // Intercept index.html and append socket.io script
-  app.get(route, (req, res) => {
+  app.get(route, (_, res) => {
     console.log(
       '[dev-hot-reload] Intercepting index.html and appending socket ...'
     );
 
-    readFile(join(watchDir, subDir, 'index.html'), 'utf8', (err, data) => {
+    readFile(join(watchDir, subDir, 'index.html'), 'utf8', (err, html) => {
       if (err) throw new Error(err.toString());
 
-      const indexHtml = data.replace('</body>', `${inlineScript()}\n</body>`);
+      html = appendLhdData(html);
+      html = html.replace('</body>', `${inlineScript()}\n</body>`);
 
-      res.send(indexHtml);
+      res.send(html);
     });
   });
 
